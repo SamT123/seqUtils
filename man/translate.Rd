@@ -2,16 +2,18 @@
 % Please edit documentation in R/translate.R
 \name{translate}
 \alias{translate}
-\title{Wrapper for Biostrings::translate so a character vector can be provided}
+\title{Wrapper for Biostrings::translate}
 \usage{
-translate(sequences)
+translate(sequences, reference_aas = NULL)
 }
 \arguments{
-\item{sequences}{character vector of DNA/RNA sequences}
+\item{sequences}{Character vector of DNA/RNA sequences}
+
+\item{reference}{(optional) Sequences are aligned to \code{reference} if provided. Useful if, for example, there are deletions in sequences}
 }
 \value{
 character vector of AA sequences, with names preserved
 }
 \description{
-Wrapper for Biostrings::translate so a character vector can be provided
+Accepts character vector, and handles deletions
 }
