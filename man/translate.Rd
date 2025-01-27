@@ -9,7 +9,7 @@ translate(sequences, reference_aas = NULL)
 \arguments{
 \item{sequences}{Character vector of DNA/RNA sequences}
 
-\item{reference}{(optional) Sequences are aligned to \code{reference} if provided. Useful if, for example, there are deletions in sequences}
+\item{reference_aas}{(optional) Sequences are aligned to \code{reference} if provided. Useful if, for example, there are deletions in sequences}
 }
 \value{
 character vector of AA sequences, with names preserved

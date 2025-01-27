@@ -3,7 +3,7 @@
 #' Accepts character vector, and handles deletions
 #'
 #' @param sequences Character vector of DNA/RNA sequences
-#' @param reference (optional) Sequences are aligned to `reference` if provided. Useful if, for example, there are deletions in sequences
+#' @param reference_aas (optional) Sequences are aligned to `reference` if provided. Useful if, for example, there are deletions in sequences
 #'
 #' @return character vector of AA sequences, with names preserved
 #' @importFrom Biostrings translate DNAStringSet
