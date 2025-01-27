@@ -47,7 +47,7 @@ fast_fasta = function(path){
 #'
 #' @importFrom readr write_lines
 #' @export
-fast_fasta.write = function(seqs, names = NULL, path){
+write_fast_fasta = function(seqs, names = NULL, path){
   if (is.null(names)) names = names(seqs)
 
   stopifnot(length(seqs) == length(names))
