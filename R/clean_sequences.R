@@ -18,6 +18,8 @@ clean_sequences = function(
     replacement_character = NULL
 ) {
 
+  sequences = toupper(sequences)
+
   if (is.null(replacement_character)){
     replacement_character = c(aa = "X", nt = "N")[[type]]
   }

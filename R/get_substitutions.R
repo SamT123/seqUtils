@@ -22,7 +22,7 @@ get_substitutions = function(
 
   lengths = nchar(c(sequence_1, sequence_2))
 
-  if (!all(lengths) == min(lengths)){
+  if (!all(lengths == min(lengths))){
     message('Trimming to shortest length: ', min(lengths))
     sequence_1 = substr(sequence_1, 1, min(lengths))
     sequence_2 = substr(sequence_2, 1, min(lengths))
@@ -97,15 +97,16 @@ get_substitutions_CASE_MULTIPLE = function(
   for (i in seq_along(sequence_1_split)){
 
     sequence_2_pos_i = as.character(Biostrings::subseq(sequence_2_split, i, i))
-    to_add = paste0(sequence_1_split[[i]], position_map[[i]], sequence_2_pos_i)
+    incl = sequence_1_split[[i]] != sequence_2_pos_i &
+      (!(sequence_2_pos_i %in% exclude | sequence_1_split[[i]] %in% exclude))
 
-    exclude_i = (sequence_2_pos_i %in% exclude | sequence_1_split[[i]] %in% exclude)
-    if (!exclude) incl = incl & sequence_2_pos_i != 'X'
-
-
-    diffs[!exclude_i] = purrr::map2(
-      diffs[!exclude_i],
-      to_add[!exclude_i],
+    diffs[incl] = purrr::map2(
+      diffs[incl],
+      paste0(
+        sequence_1_split[[i]],
+        position_map[[i]],
+        sequence_2_pos_i[incl]
+      ),
       append
     )
 

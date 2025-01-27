@@ -8,11 +8,11 @@
 #' @importFrom readr read_lines
 #' @export
 fast_fasta = function(path){
-  message('Loading seqs')
   lines = readr::read_lines(path, skip_empty_rows = T)
   name_lines = which(substr(lines, 1, 1) == '>')
+  message("Loaded ", length(name_lines), " sequences")
 
-  if (all(name_lines == seq(1, length(lines), 2))){
+  if (length(name_lines) == length(lines)/2 && all(name_lines == seq(1, length(lines), 2))){
     # case: single-line sequences
     sequences = lines[-name_lines]
     names(sequences) = lines[name_lines]
