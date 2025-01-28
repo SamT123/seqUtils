@@ -12,10 +12,13 @@
 #' @export
 translate = function(sequences, reference_aas = NULL){
 
-  any_deletions = any(stringr::str_detect(sequences, "-"))
+  sequences[substr(sequences, 1, 1) == "-"] = map_chr(
+    sequences[substr(sequences, 1, 1) == "-"],
+    align_dels_to_codons_for_translation
+  )
 
-  if (any_deletions & is.null(reference_aas)){
-    warning("Deletions detected & no reference for alignment provided. Output will be unaligned.")
+  if (any(stringr::str_detect(sequences, "-")) & is.null(reference_aas)){
+    warning("Deletions present but no reference for alignment provided. Output will be unaligned.")
   }
 
   sequences = stringr::str_remove_all(sequences, "-")
@@ -33,4 +36,25 @@ translate = function(sequences, reference_aas = NULL){
   }
 
   aa_sequences
+}
+
+
+count_flanking_char = function(string, char, leading = T){
+  string = strsplit(string, "")[[1]]
+  if (!leading) string = rev(string)
+  n = 0
+  while(string[n+1] == char){
+    n = n+1
+  }
+  as.integer(n)
+}
+
+align_dels_to_codons_for_translation = function(sequence){
+  leading_dels = count_flanking_char(sequence, "-", leading = T)
+  substr(sequence, 1, 3*ceiling(leading_dels/3)) = paste0(
+    rep("-", 3*ceiling(leading_dels/3)),
+    collapse = ""
+  )
+
+  sequence
 }
