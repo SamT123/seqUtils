@@ -28,7 +28,7 @@ get_substitutions = function(
     sequence_2 = substr(sequence_2, 1, min(lengths))
   }
 
-  if (length(sequence_1) == 1 & length(sequence_2) == 1){
+  if (length(sequence_1) == 1 & length(sequence_2) == 1 & simplify){
     return(get_substitutions_CASE_SINGLE(sequence_1, sequence_2, position_map, exclude))
   }
 

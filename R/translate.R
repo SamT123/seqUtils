@@ -22,6 +22,7 @@ translate = function(sequences, reference_aas = NULL){
   }
 
   sequences = stringr::str_remove_all(sequences, "-")
+  sequences = align_end_to_codon(sequences)
 
   aa_sequences = Biostrings::translate(
     Biostrings::DNAStringSet(sequences),
@@ -49,7 +50,17 @@ count_flanking_char = function(string, char, leading = T){
   as.integer(n)
 }
 
+align_end_to_codon = function(sequences){
+  stringr::str_sub(
+    sequences,
+    1,
+    floor(nchar(sequences)/3)*3
+  )
+
+}
+
 align_dels_to_codons_for_translation = function(sequence){
+  if (is.na(sequence)) return(sequence)
   leading_dels = count_flanking_char(sequence, "-", leading = T)
   substr(sequence, 1, 3*ceiling(leading_dels/3)) = paste0(
     rep("-", 3*ceiling(leading_dels/3)),
