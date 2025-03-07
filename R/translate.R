@@ -12,29 +12,46 @@
 #' @export
 translate = function(sequences, reference_aas = NULL){
 
-  sequences[substr(sequences, 1, 1) == "-"] = map_chr(
-    sequences[substr(sequences, 1, 1) == "-"],
-    align_dels_to_codons_for_translation
-  )
+  if (any(is.na(sequences))) warning("Some sequences are NA!")
 
-  if (any(stringr::str_detect(sequences, "-")) & is.null(reference_aas)){
-    warning("Deletions present but no reference for alignment provided. Output will be unaligned.")
+
+  do_translation = function(sequences, reference_aas){
+    sequences[substr(sequences, 1, 1) == "-"] = map_chr(
+      sequences[substr(sequences, 1, 1) == "-"],
+      align_dels_to_codons_for_translation
+    )
+
+    if (any(stringr::str_detect(sequences, "-")) & is.null(reference_aas)){
+      warning("Deletions present but no reference for alignment provided. Output will be unaligned.")
+    }
+
+    sequences = stringr::str_remove_all(sequences, "-")
+    sequences = align_end_to_codon(sequences)
+
+    aa_sequences = Biostrings::translate(
+      Biostrings::DNAStringSet(sequences),
+      if.fuzzy.codon = "X"
+    )
+
+    aa_sequences = as.character(aa_sequences)
+    names(aa_sequences) = names(sequences)
+
+    if (!is.null(reference_aas)){
+      aa_sequences = mafft_align(aa_sequences, reference_aas)
+    }
+
+    aa_sequences
   }
 
-  sequences = stringr::str_remove_all(sequences, "-")
-  sequences = align_end_to_codon(sequences)
-
-  aa_sequences = Biostrings::translate(
-    Biostrings::DNAStringSet(sequences),
-    if.fuzzy.codon = "X"
+  aa_sequences = setNames(
+    rep(NA, length(sequences)),
+    names(sequences)
   )
 
-  aa_sequences = as.character(aa_sequences)
-  names(aa_sequences) = names(sequences)
-
-  if (!is.null(reference_aas)){
-    aa_sequences = mafft_align(aa_sequences, reference_aas)
-  }
+  aa_sequences[!is.na(sequences)] = do_translation(
+    sequences[!is.na(sequences)],
+    reference_aas
+  )
 
   aa_sequences
 }

@@ -4,12 +4,10 @@
 \alias{translate}
 \title{Wrapper for Biostrings::translate}
 \usage{
-translate(sequences, del_treatment, reference_aas = NULL)
+translate(sequences, reference_aas = NULL)
 }
 \arguments{
 \item{sequences}{Character vector of DNA/RNA sequences}
-
-\item{del_treatment}{Should the function \code{remove} deletions "-" (because they are real deletions) or \code{replace} them with "X" (because they are missing sequence?)}
 
 \item{reference_aas}{(optional) Sequences are aligned to \code{reference} if provided. Useful if, for example, there are deletions in sequences}
 }
