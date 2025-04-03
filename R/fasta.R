@@ -8,7 +8,7 @@
 #' @importFrom readr read_lines
 #' @export
 fast_fasta = function(path){
-  lines = readr::read_lines(path, skip_empty_rows = T)
+  lines = readr::read_lines(path, skip_empty_rows = F)
   name_lines = which(substr(lines, 1, 1) == '>')
   message("Loaded ", length(name_lines), " sequences")
 
