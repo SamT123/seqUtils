@@ -1,19 +1,16 @@
 Package: seqUtils
-Title: What the Package Does (One Line, Title Case)
+Title: Sequence tools
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Sam", "Turner", , "sat65@cam.ac.uk", role = c("aut", "cre"))
+Description: Tools for working with sequence data.
 License: MIT + file LICENSE
 URL: https://github.com/SamT123/seqUtils
 BugReports: https://github.com/SamT123/seqUtils/issues
 Imports: 
     Biostrings,
-    knitr,
     purrr,
     readr,
-    rmarkdown,
     stats,
     stringr
 Encoding: UTF-8

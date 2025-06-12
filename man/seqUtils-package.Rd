@@ -4,9 +4,9 @@
 \name{seqUtils-package}
 \alias{seqUtils}
 \alias{seqUtils-package}
-\title{seqUtils: What the Package Does (One Line, Title Case)}
+\title{seqUtils: Sequence tools}
 \description{
-What the package does (one paragraph).
+Tools for working with sequence data.
 }
 \seealso{
 Useful links:
@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Sam Turner \email{sat65@cam.ac.uk}
 
 }
 \keyword{internal}
