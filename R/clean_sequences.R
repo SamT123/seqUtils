@@ -1,4 +1,3 @@
-
 #' Remove non-standard characters from sequences
 #'
 #' @param sequences A character vector of sequences
@@ -12,19 +11,18 @@
 #' @importFrom stringr str_replace_all
 #' @importFrom Biostrings AA_STANDARD
 clean_sequences = function(
-    sequences,
-    type,
-    alphabet = NULL,
-    replacement_character = NULL
+  sequences,
+  type,
+  alphabet = NULL,
+  replacement_character = NULL
 ) {
-
   sequences = toupper(sequences)
 
-  if (is.null(replacement_character)){
+  if (is.null(replacement_character)) {
     replacement_character = c(aa = "X", nt = "N")[[type]]
   }
 
-  if (is.null(alphabet)){
+  if (is.null(alphabet)) {
     alphabet = list(
       aa = c(Biostrings::AA_STANDARD, "-"),
       nt = c("A", "T", "C", "G", "-")
@@ -37,10 +35,13 @@ clean_sequences = function(
     "]"
   )
 
-  sequences = str_replace_all(
-    sequences,
-    regex,
-    replacement_character
+  sequences = setNames(
+    str_replace_all(
+      sequences,
+      regex,
+      replacement_character
+    ),
+    names(sequences)
   )
 
   sequences
