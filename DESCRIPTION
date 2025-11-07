@@ -11,7 +11,10 @@ License: MIT + file LICENSE
 URL: https://github.com/SamT123/seqUtils
 BugReports: https://github.com/SamT123/seqUtils/issues
 Imports:
+    ape,
     Biostrings,
+    castor,
+    fs,
     purrr,
     readr,
     stats,
