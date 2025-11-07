@@ -1,6 +1,10 @@
 # Helper function to check if mafft is available
 mafft_available = function() {
-  result = suppressWarnings(system("which mafft", ignore.stdout = TRUE, ignore.stderr = TRUE))
+  result = suppressWarnings(system(
+    "which mafft",
+    ignore.stdout = TRUE,
+    ignore.stderr = TRUE
+  ))
   return(result == 0)
 }
 
@@ -42,7 +46,7 @@ test_that("mafft_align handles NA sequences", {
   expect_false(is.na(result[3]))
 })
 
-test_that("mafft_align handles duplicate sequences efficiently", {
+test_that("mafft_align handles duplicate sequences accurately", {
   skip_if_not(mafft_available(), "mafft not installed")
 
   reference = "ATCGATCGATCG"
