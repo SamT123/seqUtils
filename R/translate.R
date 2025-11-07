@@ -17,6 +17,18 @@
 #'   is provided, sequences will be aligned. Otherwise, deletions are simply removed and
 #'   sequences may have different lengths.
 #'
+#' @examples
+#' # Simple translation without deletions
+#' seqs <- c("ATGGCC", "ATGTTT")
+#' translate(seqs)
+#'
+#' \dontrun{
+#' # With deletions and reference alignment
+#' seqs <- c("ATGGCC", "ATG---GCC")
+#' ref_aa <- translate(seqs[1])
+#' translate(seqs, reference_aas = ref_aa)
+#' }
+#'
 #' @importFrom Biostrings translate DNAStringSet
 #' @importFrom stringr str_detect str_remove_all
 #'
@@ -70,7 +82,7 @@ translate = function(sequences, reference_aas = NULL) {
 }
 
 
-count_flanking_char = function(string, char, leading = T) {
+count_flanking_char = function(string, char, leading = TRUE) {
   string = strsplit(string, "")[[1]]
   if (!leading) {
     string = rev(string)
@@ -94,7 +106,7 @@ align_dels_to_codons_for_translation = function(sequence) {
   if (is.na(sequence)) {
     return(sequence)
   }
-  leading_dels = count_flanking_char(sequence, "-", leading = T)
+  leading_dels = count_flanking_char(sequence, "-", leading = TRUE)
   substr(sequence, 1, 3 * ceiling(leading_dels / 3)) = paste0(
     rep("-", 3 * ceiling(leading_dels / 3)),
     collapse = ""

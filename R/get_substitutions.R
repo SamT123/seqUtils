@@ -15,6 +15,19 @@
 #' @return List of character vectors (one per query sequence) containing substitutions, or
 #'   a single character vector if simplify = TRUE and only one query sequence provided
 #'
+#' @examples
+#' # Single comparison
+#' get_substitutions("ACDEF", "ACDEG")  # Returns "F5G"
+#'
+#' # Multiple sequences
+#' get_substitutions("ACDEF", c("ACDEG", "TCDEG"))
+#'
+#' # Custom position numbering
+#' get_substitutions("ACE", "TCE", position_map = c(145, 155, 156))
+#'
+#' # Exclude ambiguous characters
+#' get_substitutions("ACDEF", "XCDXF", exclude = "X")
+#'
 #' @importFrom Biostrings AAStringSet subseq
 #' @importFrom purrr map2 pmap
 #' @importFrom stringr str_split
@@ -24,8 +37,16 @@ get_substitutions = function(
   sequence_2,
   position_map = 1:nchar(sequence_1),
   exclude = c(),
-  simplify = T
+  simplify = TRUE
 ) {
+  # Input validation
+  if (length(sequence_1) != 1) {
+    stop("sequence_1 must be a single sequence, got ", length(sequence_1))
+  }
+  if (length(sequence_2) < 1) {
+    stop("sequence_2 must contain at least one sequence")
+  }
+
   lengths = nchar(c(sequence_1, sequence_2))
 
   if (!all(lengths == min(lengths))) {

@@ -2,16 +2,29 @@
 % Please edit documentation in R/fasta.R
 \name{fast_fasta}
 \alias{fast_fasta}
-\title{Read a fasta file quite quickly using \code{readr::read_lines()}}
+\title{Read FASTA files efficiently}
 \usage{
 fast_fasta(path)
 }
 \arguments{
-\item{path}{path of .fasta to read}
+\item{path}{Path to FASTA file}
 }
 \value{
-Named character vector of sequences
+Named character vector where names are sequence identifiers and values
+are the sequences (multi-line sequences are concatenated into single strings)
 }
 \description{
-Read a fasta file quite quickly using \code{readr::read_lines()}
+Reads FASTA format files, handling both single-line and multi-line sequences.
+Sequence names have the leading ">" removed. Prints a message with the number
+of sequences loaded.
+}
+\examples{
+\dontrun{
+# Read sequences from a FASTA file
+sequences <- fast_fasta("sequences.fasta")
+
+# Access sequences by name
+sequences["seq1"]
+}
+
 }

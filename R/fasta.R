@@ -9,10 +9,19 @@
 #' @return Named character vector where names are sequence identifiers and values
 #'   are the sequences (multi-line sequences are concatenated into single strings)
 #'
+#' @examples
+#' \dontrun{
+#' # Read sequences from a FASTA file
+#' sequences <- fast_fasta("sequences.fasta")
+#'
+#' # Access sequences by name
+#' sequences["seq1"]
+#' }
+#'
 #' @importFrom readr read_lines
 #' @export
 fast_fasta = function(path) {
-  lines = readr::read_lines(path, skip_empty_rows = F)
+  lines = readr::read_lines(path, skip_empty_rows = FALSE)
   name_lines = which(substr(lines, 1, 1) == '>')
   message("Loaded ", length(name_lines), " sequences")
 
@@ -53,6 +62,16 @@ fast_fasta = function(path) {
 #'   written on single lines. Use 60 or 80 for standard wrapped format.
 #'
 #' @return NULL (invisibly)
+#'
+#' @examples
+#' \dontrun{
+#' # Write named sequences
+#' seqs <- c(seq1 = "ACGTACGT", seq2 = "TGCATGCA")
+#' write_fast_fasta(seqs, path = "output.fasta")
+#'
+#' # Write with wrapped lines
+#' write_fast_fasta(seqs, path = "output.fasta", line_width = 60)
+#' }
 #'
 #' @importFrom readr write_lines
 #' @export

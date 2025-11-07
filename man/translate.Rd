@@ -2,18 +2,44 @@
 % Please edit documentation in R/translate.R
 \name{translate}
 \alias{translate}
-\title{Wrapper for Biostrings::translate}
+\title{Wrapper for Biostrings::translate with deletion handling}
 \usage{
 translate(sequences, reference_aas = NULL)
 }
 \arguments{
-\item{sequences}{Character vector of DNA/RNA sequences}
+\item{sequences}{Character vector of DNA/RNA sequences. May contain gap characters ("-").}
 
-\item{reference_aas}{(optional) Sequences are aligned to \code{reference} if provided. Useful if, for example, there are deletions in sequences}
+\item{reference_aas}{(optional) Reference amino acid sequence. If provided, translated
+sequences will be aligned to this reference using MAFFT. This is essential when
+input sequences contain deletions and you want to preserve alignment in the output.}
 }
 \value{
-character vector of AA sequences, with names preserved
+Character vector of amino acid sequences, with names preserved. If \code{reference_aas}
+is provided, sequences will be aligned. Otherwise, deletions are simply removed and
+sequences may have different lengths.
 }
 \description{
-Accepts character vector, and handles deletions
+Translates DNA/RNA sequences to amino acids, with special handling for deletions
+(gap characters "-"). The function processes deletions as follows:
+}
+\details{
+\enumerate{
+\item Leading deletions are padded to codon boundaries (multiples of 3)
+\item All deletions are removed before translation
+\item If \code{reference_aas} is provided, translated sequences are realigned to the reference
+\item If deletions exist without a reference, output will be unaligned (warning issued)
+}
+}
+\examples{
+# Simple translation without deletions
+seqs <- c("ATGGCC", "ATGTTT")
+translate(seqs)
+
+\dontrun{
+# With deletions and reference alignment
+seqs <- c("ATGGCC", "ATG---GCC")
+ref_aa <- translate(seqs[1])
+translate(seqs, reference_aas = ref_aa)
+}
+
 }

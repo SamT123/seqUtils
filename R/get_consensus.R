@@ -12,6 +12,19 @@
 #'
 #' @return Single consensus sequence as a character string
 #'
+#' @examples
+#' # Basic consensus
+#' seqs <- c("ACGT", "ACGT", "ACAT")
+#' get_consensus(seqs)  # Returns "ACGT" (G appears in 2/3 sequences)
+#'
+#' # With frequency threshold
+#' seqs <- c("ACGT", "ACAT", "ATTT")
+#' get_consensus(seqs, min_freq = 0.7)  # Returns "A??T"
+#'
+#' # Exclude gaps from calculation
+#' seqs <- c("AC-T", "ACGT", "AC-T")
+#' get_consensus(seqs, excluded_characters = "-")
+#'
 #' @importFrom Biostrings consensusMatrix
 #' @export
 get_consensus = function(sequences, excluded_characters = c(), min_freq = 0.5) {

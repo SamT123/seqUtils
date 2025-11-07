@@ -11,9 +11,21 @@
 #' @return Character vector of aligned sequences (same length as reference), with
 #'   names preserved. NA sequences remain NA.
 #'
+#' @examples
+#' \dontrun{
+#' # Align sequences to a reference
+#' ref <- "ACDEFGHIKLMNPQRSTVWY"
+#' seqs <- c("ACDEFGH", "ACDEFGHIKL", "ACDEFGHIKLMNPQ")
+#' aligned <- mafft_align(seqs, ref)
+#' }
+#'
 #' @note Requires MAFFT to be installed and available in PATH
 #' @export
 mafft_align = function(unaligned_sequences, reference_sequence){
+  # Input validation
+  if (length(reference_sequence) != 1) {
+    stop("reference_sequence must be a single sequence, got ", length(reference_sequence))
+  }
 
   NA_sequence_locations = is.na(unaligned_sequences)
 

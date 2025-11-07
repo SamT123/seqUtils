@@ -7,17 +7,34 @@
 clean_sequences(sequences, type, alphabet = NULL, replacement_character = NULL)
 }
 \arguments{
-\item{sequences}{A character vector of sequences}
+\item{sequences}{A character vector of sequences (names are preserved if present)}
 
-\item{type}{"aa" or "nt"}
+\item{type}{Either "aa" (amino acid) or "nt" (nucleotide)}
 
-\item{alphabet}{(optional) Provide a custom alphabet (defaults for "aa" and "nt" are the alphabet or "-")}
+\item{alphabet}{(optional) Character vector defining valid characters. Defaults:
+\itemize{
+\item For type "aa": The 20 standard amino acids (ARNDCQEGHILKMFPSTWYV) plus "-"
+\item For type "nt": A, T, C, G, and "-"
+}}
 
-\item{replacement_character}{(optional) Provide a custom replacement character (defaults for "aa" and "nt" are "X" and "N"; you may want "-")}
+\item{replacement_character}{(optional) Character to replace non-standard characters with.
+Defaults to "X" for amino acids and "N" for nucleotides. Use "-" to replace with gaps.}
 }
 \value{
-a character vector of cleaned sequences
+A character vector of cleaned sequences with names preserved
 }
 \description{
-Remove non-standard characters from sequences
+Replaces any characters not in the specified alphabet with a replacement character.
+All sequences are converted to uppercase before processing.
+}
+\examples{
+# Clean nucleotide sequences
+clean_sequences(c("ATCGXYZ", "GGGNNN"), type = "nt")  # X,Y,Z become N
+
+# Clean amino acid sequences
+clean_sequences(c("ACDEF123"), type = "aa")  # 1,2,3 become X
+
+# Use custom replacement
+clean_sequences("ATC-G", type = "nt", replacement_character = "-")
+
 }

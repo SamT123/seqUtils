@@ -6,3 +6,11 @@
 #' @importFrom stats setNames
 ## usethis namespace: end
 NULL
+
+.onAttach <- function(libname, pkgname) {
+  if (Sys.which("mafft") == "") {
+    packageStartupMessage(
+      "Note: MAFFT not found in PATH. Install MAFFT for alignment functions."
+    )
+  }
+}

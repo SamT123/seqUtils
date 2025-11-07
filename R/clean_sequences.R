@@ -14,6 +14,17 @@
 #'   Defaults to "X" for amino acids and "N" for nucleotides. Use "-" to replace with gaps.
 #'
 #' @return A character vector of cleaned sequences with names preserved
+#'
+#' @examples
+#' # Clean nucleotide sequences
+#' clean_sequences(c("ATCGXYZ", "GGGNNN"), type = "nt")  # X,Y,Z become N
+#'
+#' # Clean amino acid sequences
+#' clean_sequences(c("ACDEF123"), type = "aa")  # 1,2,3 become X
+#'
+#' # Use custom replacement
+#' clean_sequences("ATC-G", type = "nt", replacement_character = "-")
+#'
 #' @export
 #'
 #' @importFrom stringr str_replace_all
@@ -24,6 +35,11 @@ clean_sequences = function(
   alphabet = NULL,
   replacement_character = NULL
 ) {
+  # Input validation
+  if (!type %in% c("aa", "nt")) {
+    stop("type must be either 'aa' or 'nt', got '", type, "'")
+  }
+
   sequences = toupper(sequences)
 
   if (is.null(replacement_character)) {

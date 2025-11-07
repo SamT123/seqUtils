@@ -1,18 +1,25 @@
 Package: seqUtils
-Title: Sequence tools
+Title: Utilities for Biological Sequence Analysis
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
     person("Sam", "Turner", , "sat65@cam.ac.uk", role = c("aut", "cre"))
-Description: Tools for working with sequence data.
+Description: Provides efficient tools for common sequence analysis tasks including
+    FASTA file I/O, sequence translation, alignment using MAFFT, substitution
+    detection, and consensus calculation. Designed for working with DNA, RNA,
+    and protein sequences.
 License: MIT + file LICENSE
 URL: https://github.com/SamT123/seqUtils
 BugReports: https://github.com/SamT123/seqUtils/issues
-Imports: 
+Imports:
     Biostrings,
     purrr,
     readr,
     stats,
     stringr
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

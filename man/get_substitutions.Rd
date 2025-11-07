@@ -2,30 +2,49 @@
 % Please edit documentation in R/get_substitutions.R
 \name{get_substitutions}
 \alias{get_substitutions}
-\title{Get substitutions which differ between two sequences}
+\title{Get substitutions between reference and query sequences}
 \usage{
 get_substitutions(
   sequence_1,
   sequence_2,
   position_map = 1:nchar(sequence_1),
   exclude = c(),
-  simplify = T
+  simplify = TRUE
 )
 }
 \arguments{
-\item{sequence_1}{"from" sequnce}
+\item{sequence_1}{Reference sequence (single sequence)}
 
-\item{sequence_2}{"to" sequence(s); can be multiple sequences}
+\item{sequence_2}{Query sequence(s) to compare (character vector, can be multiple)}
 
-\item{position_map}{"rename" positions, if you want n'th position of sequences to be referred to with a number other than "n". e.g. if sequence_1 & sequence_2 are just the Koel-7 positions, use \code{position_map = c(145, 155, 156, 158, 159, 189, 193)}}
+\item{position_map}{Custom position numbering (default: 1:nchar(sequence_1)). Useful when
+sequences represent a subset of positions from a larger sequence.}
 
-\item{exclude}{characters to exclude from substitution list (perhaps "X" for aas, "N" for nts)}
+\item{exclude}{Characters to ignore when comparing (e.g., "X" for unknown amino acids,
+"N" for ambiguous nucleotides)}
 
-\item{simplify}{should output of length 1 (i.e. \code{length(sequence_2)} = 1) be unlisted?}
+\item{simplify}{If TRUE and only one query sequence provided, returns a character vector
+instead of a list (default: TRUE)}
 }
 \value{
-list of character vectors
+List of character vectors (one per query sequence) containing substitutions, or
+a single character vector if simplify = TRUE and only one query sequence provided
 }
 \description{
-Get substitutions which differ between two sequences
+Compares sequences and returns substitutions in the format "A123T" (reference amino acid,
+position, query amino acid). Sequences are trimmed to the shortest length if they differ.
+}
+\examples{
+# Single comparison
+get_substitutions("ACDEF", "ACDEG")  # Returns "F5G"
+
+# Multiple sequences
+get_substitutions("ACDEF", c("ACDEG", "TCDEG"))
+
+# Custom position numbering
+get_substitutions("ACE", "TCE", position_map = c(145, 155, 156))
+
+# Exclude ambiguous characters
+get_substitutions("ACDEF", "XCDXF", exclude = "X")
+
 }

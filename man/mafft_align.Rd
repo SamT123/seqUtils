@@ -2,18 +2,33 @@
 % Please edit documentation in R/mafft_align.R
 \name{mafft_align}
 \alias{mafft_align}
-\title{Align sequences using mafft}
+\title{Align sequences to a reference using MAFFT}
 \usage{
 mafft_align(unaligned_sequences, reference_sequence)
 }
 \arguments{
-\item{unaligned_sequences}{Character vector of unaligned sequences}
+\item{unaligned_sequences}{Character vector of unaligned sequences (can include NAs)}
 
-\item{reference_sequence}{Single sequence to align \code{unaligned_sequences} to}
+\item{reference_sequence}{Single reference sequence to align to}
 }
 \value{
-Character vector of aligned sequences, with names preserved
+Character vector of aligned sequences (same length as reference), with
+names preserved. NA sequences remain NA.
 }
 \description{
-Align sequences using mafft
+Aligns sequences to a reference using MAFFT's --addfragments and --keeplength
+flags. Output sequences preserve the reference length. Duplicate sequences are
+aligned once for efficiency. Results are uppercase with names preserved.
+}
+\note{
+Requires MAFFT to be installed and available in PATH
+}
+\examples{
+\dontrun{
+# Align sequences to a reference
+ref <- "ACDEFGHIKLMNPQRSTVWY"
+seqs <- c("ACDEFGH", "ACDEFGHIKL", "ACDEFGHIKLMNPQ")
+aligned <- mafft_align(seqs, ref)
+}
+
 }

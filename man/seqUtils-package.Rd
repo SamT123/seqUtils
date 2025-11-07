@@ -4,9 +4,9 @@
 \name{seqUtils-package}
 \alias{seqUtils}
 \alias{seqUtils-package}
-\title{seqUtils: Sequence tools}
+\title{seqUtils: Utilities for Biological Sequence Analysis}
 \description{
-Tools for working with sequence data.
+Provides efficient tools for common sequence analysis tasks including FASTA file I/O, sequence translation, alignment using MAFFT, substitution detection, and consensus calculation. Designed for working with DNA, RNA, and protein sequences.
 }
 \seealso{
 Useful links:

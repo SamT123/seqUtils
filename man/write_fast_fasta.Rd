@@ -2,17 +2,34 @@
 % Please edit documentation in R/fasta.R
 \name{write_fast_fasta}
 \alias{write_fast_fasta}
-\title{Write a fasta file quite quickly using \code{readr::write_lines()}}
+\title{Write sequences to FASTA file}
 \usage{
-write_fast_fasta(seqs, names = NULL, path)
+write_fast_fasta(seqs, names = NULL, path, line_width = NULL)
 }
 \arguments{
-\item{seqs}{a named or unnamed (in which case \code{names} must be provided) character vector of sequences}
+\item{seqs}{Character vector of sequences (named or unnamed)}
 
-\item{names}{(optional) names of sequences, required if \code{sequences} is unnamed.}
+\item{names}{Sequence names (required if \code{seqs} is unnamed)}
 
-\item{path}{path to write .fasta}
+\item{path}{Output file path}
+
+\item{line_width}{Maximum characters per line. If NULL (default), sequences are
+written on single lines. Use 60 or 80 for standard wrapped format.}
+}
+\value{
+NULL (invisibly)
 }
 \description{
-Write a fasta file quite quickly using \code{readr::write_lines()}
+Write sequences to FASTA file
+}
+\examples{
+\dontrun{
+# Write named sequences
+seqs <- c(seq1 = "ACGTACGT", seq2 = "TGCATGCA")
+write_fast_fasta(seqs, path = "output.fasta")
+
+# Write with wrapped lines
+write_fast_fasta(seqs, path = "output.fasta", line_width = 60)
+}
+
 }
