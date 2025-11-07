@@ -1,10 +1,17 @@
 
-#' Align sequences using mafft
+#' Align sequences to a reference using MAFFT
 #'
-#' @param unaligned_sequences Character vector of unaligned sequences
-#' @param reference_sequence Single sequence to align `unaligned_sequences` to
+#' Aligns sequences to a reference using MAFFT's --addfragments and --keeplength
+#' flags. Output sequences preserve the reference length. Duplicate sequences are
+#' aligned once for efficiency. Results are uppercase with names preserved.
 #'
-#' @return Character vector of aligned sequences, with names preserved
+#' @param unaligned_sequences Character vector of unaligned sequences (can include NAs)
+#' @param reference_sequence Single reference sequence to align to
+#'
+#' @return Character vector of aligned sequences (same length as reference), with
+#'   names preserved. NA sequences remain NA.
+#'
+#' @note Requires MAFFT to be installed and available in PATH
 #' @export
 mafft_align = function(unaligned_sequences, reference_sequence){
 

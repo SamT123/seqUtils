@@ -1,11 +1,18 @@
-#' Get the consensus sequence from a vector of sequences
+#' Calculate consensus sequence from multiple sequences
 #'
-#' P
+#' Returns the most frequent character at each position. Sequences are converted to
+#' uppercase before processing. Positions without a character meeting the frequency
+#' threshold are marked with "?".
 #'
-#' @param sequences a vector of sequences
-#' @param excluded_characters characters to disregard for calculating frequencies; perhaps "-", "X", "N"
-#' @param min_freq positions where there is no aa/nt at frequency >= 'min_freq' will be "?"
+#' @param sequences Character vector of aligned sequences
+#' @param excluded_characters Characters to ignore when calculating frequencies
+#'   (e.g., "-", "X", "N")
+#' @param min_freq Minimum frequency (0-1) required for a character to be used.
+#'   Positions below this threshold become "?" (default: 0.5)
 #'
+#' @return Single consensus sequence as a character string
+#'
+#' @importFrom Biostrings consensusMatrix
 #' @export
 get_consensus = function(sequences, excluded_characters = c(), min_freq = 0.5) {
   sequences = toupper(sequences)

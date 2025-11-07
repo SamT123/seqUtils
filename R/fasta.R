@@ -1,8 +1,13 @@
-#' Read a fasta file quite quickly using `readr::read_lines()`
+#' Read FASTA files efficiently
 #'
-#' @param path path of .fasta to read
+#' Reads FASTA format files, handling both single-line and multi-line sequences.
+#' Sequence names have the leading ">" removed. Prints a message with the number
+#' of sequences loaded.
 #'
-#' @return Named character vector of sequences
+#' @param path Path to FASTA file
+#'
+#' @return Named character vector where names are sequence identifiers and values
+#'   are the sequences (multi-line sequences are concatenated into single strings)
 #'
 #' @importFrom readr read_lines
 #' @export
@@ -39,14 +44,15 @@ fast_fasta = function(path) {
 }
 
 
-#' Write a fasta file quite quickly using `readr::write_lines()`
+#' Write sequences to FASTA file
 #'
-#' @param seqs a named or unnamed (in which case `names` must be provided) character vector of sequences
-#' @param names (optional) names of sequences, required if `sequences` is unnamed.
-#' @param path path to write .fasta
-#' @param line_width (optional) maximum number of characters per line for sequences. If NULL, sequences are written on a single line. Default is NULL.
+#' @param seqs Character vector of sequences (named or unnamed)
+#' @param names Sequence names (required if `seqs` is unnamed)
+#' @param path Output file path
+#' @param line_width Maximum characters per line. If NULL (default), sequences are
+#'   written on single lines. Use 60 or 80 for standard wrapped format.
 #'
-#' @return NULL
+#' @return NULL (invisibly)
 #'
 #' @importFrom readr write_lines
 #' @export
