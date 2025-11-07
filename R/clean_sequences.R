@@ -1,11 +1,19 @@
 #' Remove non-standard characters from sequences
 #'
-#' @param sequences A character vector of sequences
-#' @param type "aa" or "nt"
-#' @param alphabet (optional) Provide a custom alphabet (defaults for "aa" and "nt" are the alphabet or "-")
-#' @param replacement_character (optional) Provide a custom replacement character (defaults for "aa" and "nt" are "X" and "N"; you may want "-")
+#' Replaces any characters not in the specified alphabet with a replacement character.
+#' All sequences are converted to uppercase before processing.
 #'
-#' @return a character vector of cleaned sequences
+#' @param sequences A character vector of sequences (names are preserved if present)
+#' @param type Either "aa" (amino acid) or "nt" (nucleotide)
+#' @param alphabet (optional) Character vector defining valid characters. Defaults:
+#'   \itemize{
+#'     \item For type "aa": The 20 standard amino acids (ARNDCQEGHILKMFPSTWYV) plus "-"
+#'     \item For type "nt": A, T, C, G, and "-"
+#'   }
+#' @param replacement_character (optional) Character to replace non-standard characters with.
+#'   Defaults to "X" for amino acids and "N" for nucleotides. Use "-" to replace with gaps.
+#'
+#' @return A character vector of cleaned sequences with names preserved
 #' @export
 #'
 #' @importFrom stringr str_replace_all
