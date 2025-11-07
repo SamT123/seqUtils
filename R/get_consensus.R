@@ -7,7 +7,8 @@
 #' @param min_freq positions where there is no aa/nt at frequency >= 'min_freq' will be "?"
 #'
 #' @export
-getConsensus = function(sequences, excluded_characters = c(), min_freq = 0.5) {
+get_consensus = function(sequences, excluded_characters = c(), min_freq = 0.5) {
+  sequences = toupper(sequences)
   cm = Biostrings::consensusMatrix(sequences)
   cm = cm[!rownames(cm) %in% excluded_characters, ]
 
@@ -25,6 +26,6 @@ getConsensus = function(sequences, excluded_characters = c(), min_freq = 0.5) {
   )
 
   aas = names(highest_frequencies)
-  aas[highest_frequencies < min_freq] = "?"
+  aas[!is.finite(highest_frequencies) | highest_frequencies < min_freq] = "?"
   paste0(aas, collapse = "")
 }
