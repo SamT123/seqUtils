@@ -106,3 +106,18 @@ test_that("mafft_align handles all NA sequences", {
   expect_length(result, 3)
   expect_true(all(is.na(result)))
 })
+
+test_that("mafft_align errors when MAFFT is not installed", {
+  # Temporarily clear PATH to simulate MAFFT not being installed
+  old_path = Sys.getenv("PATH")
+  on.exit(Sys.setenv(PATH = old_path))
+  Sys.setenv(PATH = "")
+
+  reference = "ATCGATCGATCG"
+  unaligned = c("ATCGATCG", "ATCGAT")
+
+  expect_error(
+    mafft_align(unaligned, reference),
+    "MAFFT is not installed or not available in PATH"
+  )
+})

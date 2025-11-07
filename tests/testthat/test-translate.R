@@ -1,3 +1,13 @@
+# Helper function to check if mafft is available
+mafft_available = function() {
+  result = suppressWarnings(system(
+    "which mafft",
+    ignore.stdout = TRUE,
+    ignore.stderr = TRUE
+  ))
+  return(result == 0)
+}
+
 test_that("translate works for basic DNA sequence without deletions", {
   seq = c("ATGGCC")
   result = translate(seq)
@@ -27,6 +37,8 @@ test_that("translate errors when deletions present without reference", {
 })
 
 test_that("translate with reference_aas handles deletions correctly", {
+  skip_if_not(mafft_available(), "mafft not installed")
+
   seqs = c("ATGGCCAAA", "ATG---AAA")
   names(seqs) = c("ref_seq", "del_seq")
 
@@ -40,6 +52,8 @@ test_that("translate with reference_aas handles deletions correctly", {
 })
 
 test_that("translate handles leading deletions with reference", {
+  skip_if_not(mafft_available(), "mafft not installed")
+
   seq = c("-ATGGCCAA")
   ref = c("GQ")
 

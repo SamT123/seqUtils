@@ -27,6 +27,11 @@ mafft_align = function(unaligned_sequences, reference_sequence){
     stop("reference_sequence must be a single sequence, got ", length(reference_sequence))
   }
 
+  # Check if MAFFT is installed
+  if (Sys.which("mafft") == "") {
+    stop("MAFFT is not installed or not available in PATH")
+  }
+
   NA_sequence_locations = is.na(unaligned_sequences)
 
   temp_mafft_folder = tempdir()
