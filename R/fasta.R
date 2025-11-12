@@ -1,10 +1,10 @@
 #' Read FASTA files efficiently
 #'
 #' Reads FASTA format files, handling both single-line and multi-line sequences.
-#' Sequence names have the leading ">" removed. Prints a message with the number
-#' of sequences loaded.
 #'
 #' @param path Path to FASTA file
+#' @param noisy Logical; if TRUE, prints the number of sequences loaded. Default
+#'   is FALSE.
 #'
 #' @return Named character vector where names are sequence identifiers and values
 #'   are the sequences (multi-line sequences are concatenated into single strings)
@@ -20,10 +20,12 @@
 #'
 #' @importFrom readr read_lines
 #' @export
-fast_fasta = function(path) {
+fast_fasta = function(path, noisy = F) {
   lines = readr::read_lines(path, skip_empty_rows = FALSE)
   name_lines = which(substr(lines, 1, 1) == '>')
-  message("Loaded ", length(name_lines), " sequences")
+  if (noisy) {
+    message("Loaded ", length(name_lines), " sequences")
+  }
 
   if (
     length(name_lines) == length(lines) / 2 &&

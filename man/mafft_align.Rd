@@ -4,12 +4,15 @@
 \alias{mafft_align}
 \title{Align sequences to a reference using MAFFT}
 \usage{
-mafft_align(unaligned_sequences, reference_sequence)
+mafft_align(unaligned_sequences, reference_sequence, noisy = F)
 }
 \arguments{
 \item{unaligned_sequences}{Character vector of unaligned sequences (can include NAs)}
 
 \item{reference_sequence}{Single reference sequence to align to}
+
+\item{noisy}{Logical; if TRUE, prints the number of unique sequences to align.
+Default is FALSE.}
 }
 \value{
 Character vector of aligned sequences (same length as reference), with

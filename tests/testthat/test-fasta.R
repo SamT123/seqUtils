@@ -111,25 +111,6 @@ test_that("fast_fasta handles empty lines in sequences", {
   unlink(tmp_file)
 })
 
-test_that("fast_fasta prints correct message about number of sequences", {
-  tmp_file = tempfile(fileext = ".fasta")
-  writeLines(
-    c(
-      ">seq1",
-      "ACGT",
-      ">seq2",
-      "TGCA",
-      ">seq3",
-      "GGGG"
-    ),
-    tmp_file
-  )
-
-  expect_message(fast_fasta(tmp_file), "Loaded 3 sequences")
-
-  unlink(tmp_file)
-})
-
 test_that("fast_fasta handles single sequence", {
   tmp_file = tempfile(fileext = ".fasta")
   writeLines(

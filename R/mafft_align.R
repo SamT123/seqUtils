@@ -1,4 +1,3 @@
-
 #' Align sequences to a reference using MAFFT
 #'
 #' Aligns sequences to a reference using MAFFT's --addfragments and --keeplength
@@ -7,6 +6,8 @@
 #'
 #' @param unaligned_sequences Character vector of unaligned sequences (can include NAs)
 #' @param reference_sequence Single reference sequence to align to
+#' @param noisy Logical; if TRUE, prints the number of unique sequences to align.
+#'   Default is FALSE.
 #'
 #' @return Character vector of aligned sequences (same length as reference), with
 #'   names preserved. NA sequences remain NA.
@@ -21,10 +22,13 @@
 #'
 #' @note Requires MAFFT to be installed and available in PATH
 #' @export
-mafft_align = function(unaligned_sequences, reference_sequence){
+mafft_align = function(unaligned_sequences, reference_sequence, noisy = F) {
   # Input validation
   if (length(reference_sequence) != 1) {
-    stop("reference_sequence must be a single sequence, got ", length(reference_sequence))
+    stop(
+      "reference_sequence must be a single sequence, got ",
+      length(reference_sequence)
+    )
   }
 
   # Check if MAFFT is installed
@@ -35,7 +39,6 @@ mafft_align = function(unaligned_sequences, reference_sequence){
   NA_sequence_locations = is.na(unaligned_sequences)
 
   temp_mafft_folder = tempdir()
-  tempfile()
 
   reference_seq_file = tempfile(
     pattern = "reference",
@@ -54,23 +57,33 @@ mafft_align = function(unaligned_sequences, reference_sequence){
   )
 
   unique_unaligned_sequences = unique(unaligned_sequences)
-  all_to_unique_sequence_map = match(unaligned_sequences, unique_unaligned_sequences)
-  message('Number to align = ', length(unique_unaligned_sequences))
+  all_to_unique_sequence_map = match(
+    unaligned_sequences,
+    unique_unaligned_sequences
+  )
+  if (noisy) {
+    message('Number to align = ', length(unique_unaligned_sequences))
+  }
 
   write_fast_fasta(
     unique_unaligned_sequences,
     names = seq_along(unique_unaligned_sequences),
-    path  = unaligned_seqs_file
+    path = unaligned_seqs_file
   )
 
-  write_fast_fasta(reference_sequence, names = 'reference', path = reference_seq_file)
+  write_fast_fasta(
+    reference_sequence,
+    names = 'reference',
+    path = reference_seq_file
+  )
 
   system(
     paste0(
       'mafft --thread 8 --quiet --6merpair --keeplength --addfragments ',
       unaligned_seqs_file,
       ' ',
-      reference_seq_file, ' > ',
+      reference_seq_file,
+      ' > ',
       aligned_seqs_file
     )
   )
@@ -79,7 +92,6 @@ mafft_align = function(unaligned_sequences, reference_sequence){
   all_aligned_sequences = unique_aligned_sequences[all_to_unique_sequence_map]
 
   all_aligned_sequences[NA_sequence_locations] = NA
-
 
   names(all_aligned_sequences) = names(unaligned_sequences)
 

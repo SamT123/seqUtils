@@ -4,10 +4,13 @@
 \alias{fast_fasta}
 \title{Read FASTA files efficiently}
 \usage{
-fast_fasta(path)
+fast_fasta(path, noisy = F)
 }
 \arguments{
 \item{path}{Path to FASTA file}
+
+\item{noisy}{Logical; if TRUE, prints the number of sequences loaded. Default
+is FALSE.}
 }
 \value{
 Named character vector where names are sequence identifiers and values
@@ -15,8 +18,6 @@ are the sequences (multi-line sequences are concatenated into single strings)
 }
 \description{
 Reads FASTA format files, handling both single-line and multi-line sequences.
-Sequence names have the leading ">" removed. Prints a message with the number
-of sequences loaded.
 }
 \examples{
 \dontrun{
