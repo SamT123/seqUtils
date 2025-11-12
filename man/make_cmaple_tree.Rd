@@ -14,6 +14,7 @@ make_cmaple_tree(
   out_sequence = NULL,
   num_threads = "AUTO",
   model = "GTR",
+  keep_files = c("nwk", "log"),
   return_tree = TRUE
 )
 }
@@ -50,6 +51,11 @@ for CMAPLE to use. Default is \code{"AUTO"} which lets CMAPLE choose automatical
 
 \item{model}{Character string specifying the substitution model. Default is
 \code{"GTR"} (General Time Reversible).}
+
+\item{keep_files}{Character vector specifying which files to keep after CMAPLE
+execution. Valid options are \code{"nwk"} (tree file), \code{"fasta"}
+(alignment file), and \code{"log"} (log file). Default is \code{c("nwk", "log")}.
+Note: \code{"nwk"} can only be omitted when \code{return_tree = TRUE}.}
 
 \item{return_tree}{Logical. If \code{TRUE} (default), returns the tree object
 (phylo class). If \code{FALSE}, returns the file path as a character string.}
@@ -88,6 +94,21 @@ tree <- make_cmaple_tree(
   out_sequence = "seq3",
   num_threads = 4,
   model = "GTR"
+)
+
+# Keep only the tree file (delete fasta and log)
+tree <- make_cmaple_tree(
+  sequences,
+  tree_path = "my_tree.nwk",
+  keep_files = "nwk"
+)
+
+# Delete all files, only return tree object
+tree <- make_cmaple_tree(
+  sequences,
+  tree_path = "my_tree.nwk",
+  keep_files = character(0),
+  return_tree = TRUE
 )
 }
 }

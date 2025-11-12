@@ -171,3 +171,27 @@ test_that("make_cmaple_tree respects multifurcating parameter", {
   expect_s3_class(result_multi, "phylo")
   expect_false(ape::is.binary(result_multi))
 })
+
+test_that("make_cmaple_tree respects keep_files parameter", {
+  skip_if_not(cmaple_available(), "CMAPLE not installed")
+
+  sequences = c(
+    seq1 = "ATCGATCGATCGATCG",
+    seq2 = "ATCGATTGATCGATCG",
+    seq3 = "ATCGATCGAACGATCG"
+  )
+  tree_path = tempfile(fileext = ".nwk")
+  fasta_path = fs::path_ext_set(tree_path, ".fasta")
+  log_path = paste0(tree_path, ".log")
+  on.exit(unlink(c(tree_path, fasta_path, log_path)))
+
+  result = make_cmaple_tree(
+    sequences,
+    tree_path,
+    keep_files = c("nwk", "log")
+  )
+
+  expect_true(fs::file_exists(tree_path))
+  expect_true(fs::file_exists(log_path))
+  expect_false(fs::file_exists(fasta_path))
+})

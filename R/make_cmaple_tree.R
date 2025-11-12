@@ -45,6 +45,10 @@ add_to_PATH = function(path) {
 #'   for CMAPLE to use. Default is \code{"AUTO"} which lets CMAPLE choose automatically.
 #' @param model Character string specifying the substitution model. Default is
 #'   \code{"GTR"} (General Time Reversible).
+#' @param keep_files Character vector specifying which files to keep after CMAPLE
+#'   execution. Valid options are \code{"nwk"} (tree file), \code{"fasta"}
+#'   (alignment file), and \code{"log"} (log file). Default is \code{c("nwk", "log")}.
+#'   Note: \code{"nwk"} can only be omitted when \code{return_tree = TRUE}.
 #' @param return_tree Logical. If \code{TRUE} (default), returns the tree object
 #'   (phylo class). If \code{FALSE}, returns the file path as a character string.
 #'
@@ -71,6 +75,21 @@ add_to_PATH = function(path) {
 #'   num_threads = 4,
 #'   model = "GTR"
 #' )
+#'
+#' # Keep only the tree file (delete fasta and log)
+#' tree <- make_cmaple_tree(
+#'   sequences,
+#'   tree_path = "my_tree.nwk",
+#'   keep_files = "nwk"
+#' )
+#'
+#' # Delete all files, only return tree object
+#' tree <- make_cmaple_tree(
+#'   sequences,
+#'   tree_path = "my_tree.nwk",
+#'   keep_files = character(0),
+#'   return_tree = TRUE
+#' )
 #' }
 make_cmaple_tree = function(
   sequences,
@@ -82,6 +101,7 @@ make_cmaple_tree = function(
   out_sequence = NULL,
   num_threads = "AUTO",
   model = "GTR",
+  keep_files = c("nwk", "log"),
   return_tree = TRUE
 ) {
   # Validate inputs
@@ -91,6 +111,33 @@ make_cmaple_tree = function(
   if (is.null(names(sequences)) || any(names(sequences) == "")) {
     stop("sequences must be a named vector with all sequences having names")
   }
+
+  # Check that tree_path directory exists, create if needed
+  tree_dir = fs::path_dir(tree_path)
+  if (!fs::dir_exists(tree_dir)) {
+    message("Creating directory: ", tree_dir)
+    fs::dir_create(tree_dir, recurse = TRUE)
+  }
+
+  # Validate keep_files
+  if (!is.null(keep_files)) {
+    valid_files = c("nwk", "fasta", "log")
+    invalid_files = setdiff(keep_files, valid_files)
+    if (length(invalid_files) > 0) {
+      stop(
+        "Invalid keep_files values: ",
+        paste(invalid_files, collapse = ", "),
+        ". Valid options are: ",
+        paste(valid_files, collapse = ", ")
+      )
+    }
+  }
+
+  # Check that "nwk" is in keep_files if return_tree = FALSE
+  if (!return_tree && !("nwk" %in% keep_files)) {
+    stop("keep_files must include 'nwk' when return_tree = FALSE")
+  }
+
   if (!is.null(cmaple_path)) {
     add_to_PATH(cmaple_path)
   }
@@ -202,6 +249,26 @@ make_cmaple_tree = function(
   tree = castor::read_tree(file = tree_path)
   tree = ladderizeAndMaybeRoot(tree, out_sequence)
   castor::write_tree(tree, tree_path)
+
+  # Clean up files based on keep_files
+  if (!("fasta" %in% keep_files)) {
+    if (fs::file_exists(fasta_path)) {
+      fs::file_delete(fasta_path)
+    }
+  }
+
+  if (!("log" %in% keep_files)) {
+    log_path = paste0(tree_path, ".log")
+    if (fs::file_exists(log_path)) {
+      fs::file_delete(log_path)
+    }
+  }
+
+  if (!("nwk" %in% keep_files) && return_tree) {
+    if (fs::file_exists(tree_path)) {
+      fs::file_delete(tree_path)
+    }
+  }
 
   if (return_tree) {
     return(tree)
