@@ -32,7 +32,7 @@ mafft_align = function(unaligned_sequences, reference_sequence, noisy = F) {
   }
 
   # Check if MAFFT is installed
-  if (Sys.which("mafft") == "") {
+  if (system("command mafft", ignore.stdout = T) != 0) {
     stop("MAFFT is not installed or not available in PATH")
   }
 

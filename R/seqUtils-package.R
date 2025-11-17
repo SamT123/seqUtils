@@ -8,7 +8,7 @@
 NULL
 
 .onAttach <- function(libname, pkgname) {
-  if (Sys.which("mafft") == "") {
+  if (system("command mafft", ignore.stdout = T) != 0) {
     packageStartupMessage(
       "Note: MAFFT not found in PATH. Install MAFFT for alignment functions."
     )
