@@ -45,6 +45,7 @@ add_to_PATH = function(path) {
 #'   for CMAPLE to use. Default is \code{"AUTO"} which lets CMAPLE choose automatically.
 #' @param model Character string specifying the substitution model. Default is
 #'   \code{"GTR"} (General Time Reversible).
+#' @param seed Seed for RNG.
 #' @param keep_files Character vector specifying which files to keep after CMAPLE
 #'   execution. Valid options are \code{"nwk"} (tree file), \code{"fasta"}
 #'   (alignment file), and \code{"log"} (log file). Default is \code{c("nwk", "log")}.

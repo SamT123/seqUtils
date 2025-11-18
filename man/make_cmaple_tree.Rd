@@ -14,6 +14,7 @@ make_cmaple_tree(
   out_sequence = NULL,
   num_threads = "AUTO",
   model = "GTR",
+  seed = NULL,
   keep_files = c("nwk", "log"),
   return_tree = TRUE
 )
@@ -51,6 +52,8 @@ for CMAPLE to use. Default is \code{"AUTO"} which lets CMAPLE choose automatical
 
 \item{model}{Character string specifying the substitution model. Default is
 \code{"GTR"} (General Time Reversible).}
+
+\item{seed}{Seed for RNG.}
 
 \item{keep_files}{Character vector specifying which files to keep after CMAPLE
 execution. Valid options are \code{"nwk"} (tree file), \code{"fasta"}
