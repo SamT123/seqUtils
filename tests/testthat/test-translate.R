@@ -1,7 +1,7 @@
 # Helper function to check if mafft is available
 mafft_available = function() {
   result = suppressWarnings(system(
-    "which mafft",
+    "mafft --version",
     ignore.stdout = TRUE,
     ignore.stderr = TRUE
   ))

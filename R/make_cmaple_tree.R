@@ -143,7 +143,7 @@ make_cmaple_tree = function(
   }
 
   # Check if CMAPLE is available
-  if (system("command cmaple", ignore.stdout = T, ignore.stderr = T) != 0) {
+  if (system("cmaple --version", ignore.stdout = T, ignore.stderr = T) != 0) {
     stop(
       "CMAPLE is not found in PATH. Please install CMAPLE or provide cmaple_path parameter."
     )
