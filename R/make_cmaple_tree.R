@@ -101,6 +101,7 @@ make_cmaple_tree = function(
   out_sequence = NULL,
   num_threads = "AUTO",
   model = "GTR",
+  seed = NULL,
   keep_files = c("nwk", "log"),
   return_tree = TRUE
 ) {
@@ -210,6 +211,14 @@ make_cmaple_tree = function(
     cmaple_call = c(
       cmaple_call,
       "-search", "NORMAL"
+    )
+  }
+
+  if (!is.null(seed)) {
+    # fmt: skip
+    cmaple_call = c(
+      cmaple_call,
+      "--seed", shQuote(seed)
     )
   }
 
