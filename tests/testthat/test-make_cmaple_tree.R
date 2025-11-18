@@ -1,7 +1,7 @@
 # Helper function to check if CMAPLE is available
 cmaple_available = function() {
   result = suppressWarnings(system(
-    "cmaple --version",
+    "cmaple --help",
     ignore.stdout = TRUE,
     ignore.stderr = TRUE
   ))
