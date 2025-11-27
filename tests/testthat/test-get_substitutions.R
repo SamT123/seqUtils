@@ -76,3 +76,26 @@ test_that("get_substitutions simplify parameter controls return type", {
   expect_type(result2, "list")
   expect_equal(result2[[1]], "F5G")
 })
+
+test_that("get_substitutions preserves names from sequence_2 (multiple sequences)", {
+  seq1 = "ACDEF"
+  seq2 = c(sample1 = "ACDEG", sample2 = "TCDEG", sample3 = "ACDEF")
+
+  result = get_substitutions(seq1, seq2)
+
+  expect_type(result, "list")
+  expect_equal(names(result), c("sample1", "sample2", "sample3"))
+  expect_equal(result[["sample1"]], "F5G")
+  expect_equal(length(result[["sample3"]]), 0)
+})
+
+test_that("get_substitutions returns unnamed output when sequence_2 is unnamed", {
+  seq1 = "ACDEF"
+  seq2 = c("ACDEG", "TCDEG", "ACDEF")
+
+  result = get_substitutions(seq1, seq2)
+
+  expect_type(result, "list")
+  expect_null(names(result))
+  expect_equal(length(result), 3)
+})

@@ -15,7 +15,8 @@ get_substitutions(
 \arguments{
 \item{sequence_1}{Reference sequence (single sequence)}
 
-\item{sequence_2}{Query sequence(s) to compare (character vector, can be multiple)}
+\item{sequence_2}{Query sequence(s) to compare (character vector, can be multiple). If named,
+names will be preserved in the output for multi-sequence cases.}
 
 \item{position_map}{Custom position numbering (default: 1:nchar(sequence_1)). Useful when
 sequences represent a subset of positions from a larger sequence.}
@@ -27,8 +28,9 @@ sequences represent a subset of positions from a larger sequence.}
 instead of a list (default: TRUE)}
 }
 \value{
-List of character vectors (one per query sequence) containing substitutions, or
-a single character vector if simplify = TRUE and only one query sequence provided
+List of character vectors (one per query sequence) containing substitutions with
+names from sequence_2 (if present), or a single character vector if simplify = TRUE and
+only one query sequence provided. Single-sequence output is always unnamed.
 }
 \description{
 Compares sequences and returns substitutions in the format "A123T" (reference amino acid,

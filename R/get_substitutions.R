@@ -4,7 +4,8 @@
 #' position, query amino acid). Sequences are trimmed to the shortest length if they differ.
 #'
 #' @param sequence_1 Reference sequence (single sequence)
-#' @param sequence_2 Query sequence(s) to compare (character vector, can be multiple)
+#' @param sequence_2 Query sequence(s) to compare (character vector, can be multiple). If named,
+#'   names will be preserved in the output for multi-sequence cases.
 #' @param position_map Custom position numbering (default: 1:nchar(sequence_1)). Useful when
 #'   sequences represent a subset of positions from a larger sequence.
 #' @param exclude Characters to ignore when comparing (e.g., "X" for unknown amino acids,
@@ -12,8 +13,9 @@
 #' @param simplify If TRUE and only one query sequence provided, returns a character vector
 #'   instead of a list (default: TRUE)
 #'
-#' @return List of character vectors (one per query sequence) containing substitutions, or
-#'   a single character vector if simplify = TRUE and only one query sequence provided
+#' @return List of character vectors (one per query sequence) containing substitutions with
+#'   names from sequence_2 (if present), or a single character vector if simplify = TRUE and
+#'   only one query sequence provided. Single-sequence output is always unnamed.
 #'
 #' @examples
 #' # Single comparison
@@ -67,6 +69,10 @@ get_substitutions = function(
   sequence_2_uniques = unique(sequence_2)
   idxs = match(sequence_2, sequence_2_uniques)
 
+  # Store original names from sequence_2
+  sequence_2_names <- names(sequence_2)
+  has_names <- !is.null(sequence_2_names) && !all(is.na(sequence_2_names))
+
   unique_substitutions = get_substitutions_CASE_MULTIPLE(
     sequence_1,
     sequence_2_uniques,
@@ -75,6 +81,11 @@ get_substitutions = function(
   )
 
   all_substitutions = unique_substitutions[idxs]
+
+  # Preserve names from sequence_2 in output (only for multi-sequence case)
+  if (has_names) {
+    names(all_substitutions) <- sequence_2_names
+  }
 
   all_substitutions
 }
