@@ -4,25 +4,17 @@
 # seqUtils
 
 <!-- badges: start -->
+
 [![R-CMD-check](https://github.com/SamT123/seqUtils/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SamT123/seqUtils/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
-Utilities for working with biological sequences in R.
+Tools for working with biological sequences in R.
 
 ## Overview
 
-`seqUtils` provides simple, efficient tools for common sequence analysis
-tasks:
-
-- **Read/write FASTA files** - Fast I/O for single-line and multi-line
-  FASTA formats
-- **Translate sequences** - DNA/RNA to amino acids with deletion
-  handling
-- **Align sequences** - Wrapper for MAFFT alignment to reference
-  sequences
-- **Find substitutions** - Compare sequences and identify differences
-- **Calculate consensus** - Generate consensus sequences from alignments
-- **Clean sequences** - Remove or replace non-standard characters
+`seqUtils` provides tools for common sequence analysis tasks (read &
+write FASTA files, translate/align/compare sequences, etc.).
 
 ## Installation
 
@@ -33,6 +25,11 @@ You can install the development version of seqUtils from
 # install.packages("devtools")
 devtools::install_github("SamT123/seqUtils")
 ```
+
+## Requirements
+
+- MAFFT (for alignment)
+- cmaple (for tree building)
 
 ## Example
 
@@ -52,8 +49,3 @@ substitutions <- get_substitutions(
   exclude = c("X", "N")
 )
 ```
-
-## Requirements
-
-- Biostrings package
-- MAFFT (for alignment functions)
