@@ -5,7 +5,7 @@
 \alias{h3_epitope_positions}
 \title{H3 influenza epitope positions}
 \format{
-An object of class \code{list} of length 2.
+An object of class \code{list} of length 7.
 }
 \usage{
 h3_epitope_positions
