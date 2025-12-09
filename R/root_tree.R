@@ -41,8 +41,9 @@ root_tree_using_outsequence = function(
     sequences,
     tree_path = temp_tree_with_outsequence,
     starting_tree_path = temp_tree_without_outsequence,
-    freeze_starting_tree = T,
-    cmaple_path = cmaple_path
+    freeze_starting_tree = TRUE,
+    cmaple_path = cmaple_path,
+    multifurcating = !castor::is_bifurcating(tree)
   )
 
   tree_with_outsequence = castor::read_tree(
