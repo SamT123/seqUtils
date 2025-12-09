@@ -9,7 +9,8 @@ get_substitutions(
   sequence_2,
   position_map = 1:nchar(sequence_1),
   exclude = c(),
-  simplify = TRUE
+  simplify = TRUE,
+  allow_empty_sequence_2 = FALSE
 )
 }
 \arguments{
@@ -26,6 +27,9 @@ sequences represent a subset of positions from a larger sequence.}
 
 \item{simplify}{If TRUE and only one query sequence provided, returns a character vector
 instead of a list (default: TRUE)}
+
+\item{allow_empty_sequence_2}{If TRUE, allows sequence_2 to be empty (length 0),
+returning an empty list. If FALSE (default), throws an error for empty sequence_2.}
 }
 \value{
 List of character vectors (one per query sequence) containing substitutions with

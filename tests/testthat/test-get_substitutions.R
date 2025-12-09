@@ -99,3 +99,19 @@ test_that("get_substitutions returns unnamed output when sequence_2 is unnamed",
   expect_null(names(result))
   expect_equal(length(result), 3)
 })
+
+test_that("get_substitutions handles empty sequence_2 with allow_empty_sequence_2", {
+  seq1 = "ACDEF"
+  seq2 = character(0)
+
+  # Should error by default
+  expect_error(
+    get_substitutions(seq1, seq2),
+    "sequence_2 must contain at least one sequence"
+  )
+
+  # Should return empty list when allowed
+  result = get_substitutions(seq1, seq2, allow_empty_sequence_2 = TRUE)
+  expect_type(result, "list")
+  expect_equal(length(result), 0)
+})

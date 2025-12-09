@@ -12,6 +12,8 @@
 #'   "N" for ambiguous nucleotides)
 #' @param simplify If TRUE and only one query sequence provided, returns a character vector
 #'   instead of a list (default: TRUE)
+#' @param allow_empty_sequence_2 If TRUE, allows sequence_2 to be empty (length 0),
+#'   returning an empty list. If FALSE (default), throws an error for empty sequence_2.
 #'
 #' @return List of character vectors (one per query sequence) containing substitutions with
 #'   names from sequence_2 (if present), or a single character vector if simplify = TRUE and
@@ -39,14 +41,21 @@ get_substitutions = function(
   sequence_2,
   position_map = 1:nchar(sequence_1),
   exclude = c(),
-  simplify = TRUE
+  simplify = TRUE,
+  allow_empty_sequence_2 = FALSE
 ) {
   # Input validation
   if (length(sequence_1) != 1) {
     stop("sequence_1 must be a single sequence, got ", length(sequence_1))
   }
   if (length(sequence_2) < 1) {
-    stop("sequence_2 must contain at least one sequence")
+    if (!allow_empty_sequence_2) {
+      stop(
+        "sequence_2 must contain at least one sequence unless `allow_empty_sequence_2` is set to TRUE"
+      )
+    } else {
+      return(list())
+    }
   }
 
   lengths = nchar(c(sequence_1, sequence_2))
