@@ -10,6 +10,7 @@
 #' @param remove_outsequence Remove outgroup from final tree (default TRUE)
 #'
 #' @return Rooted phylogenetic tree
+#' @export
 root_tree_using_outsequence = function(
   tree,
   sequences,
