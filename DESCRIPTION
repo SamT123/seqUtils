@@ -17,6 +17,7 @@ Imports:
     fs,
     purrr,
     readr,
+    reticulate,
     stats,
     stringr
 Suggests:
