@@ -46,6 +46,8 @@ add_to_PATH = function(path) {
 #' @param model Character string specifying the substitution model. Default is
 #'   \code{"GTR"} (General Time Reversible).
 #' @param seed Seed for RNG.
+#' @param overwrite Logical. If \code{TRUE}, passes \code{--overwrite} to CMAPLE,
+#'   allowing it to overwrite existing output files. Default is \code{FALSE}.
 #' @param keep_files Character vector specifying which files to keep after CMAPLE
 #'   execution. Valid options are \code{"nwk"} (tree file), \code{"fasta"}
 #'   (alignment file), and \code{"log"} (log file). Default is \code{c("nwk", "log")}.
@@ -103,6 +105,7 @@ make_cmaple_tree = function(
   num_threads = "AUTO",
   model = "GTR",
   seed = NULL,
+  overwrite = FALSE,
   keep_files = c("nwk", "log"),
   return_tree = TRUE
 ) {
@@ -220,6 +223,14 @@ make_cmaple_tree = function(
     cmaple_call = c(
       cmaple_call,
       "--seed", shQuote(seed)
+    )
+  }
+
+  if (overwrite) {
+    # fmt: skip
+    cmaple_call = c(
+      cmaple_call,
+      "--overwrite"
     )
   }
 

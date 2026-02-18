@@ -15,6 +15,7 @@ make_cmaple_tree(
   num_threads = "AUTO",
   model = "GTR",
   seed = NULL,
+  overwrite = FALSE,
   keep_files = c("nwk", "log"),
   return_tree = TRUE
 )
@@ -54,6 +55,9 @@ for CMAPLE to use. Default is \code{"AUTO"} which lets CMAPLE choose automatical
 \code{"GTR"} (General Time Reversible).}
 
 \item{seed}{Seed for RNG.}
+
+\item{overwrite}{Logical. If \code{TRUE}, passes \code{--overwrite} to CMAPLE,
+allowing it to overwrite existing output files. Default is \code{FALSE}.}
 
 \item{keep_files}{Character vector specifying which files to keep after CMAPLE
 execution. Valid options are \code{"nwk"} (tree file), \code{"fasta"}
