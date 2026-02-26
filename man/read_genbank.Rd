@@ -11,7 +11,11 @@ read_genbank(path)
 }
 \value{
 A list with elements: \code{id}, \code{name}, \code{description}, \code{sequence},
-\code{annotations}, and \code{features}.
+\code{annotations}, and \code{features}. Each feature includes a \code{parts} field: a
+list of \verb{\{start, end\}} intervals (0-based, half-open). For simple features
+this has length 1; for spliced features (e.g. M2, NEP) it contains one
+element per exon. \code{start}/\code{end} on the feature itself remain the outer
+bounds for backward compatibility.
 }
 \description{
 Parses a GenBank file using BioPython's SeqIO, returning a structured list

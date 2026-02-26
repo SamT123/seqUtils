@@ -29,7 +29,11 @@ references <- NULL
 #'
 #' @param path Path to a GenBank (.gb) file.
 #' @return A list with elements: `id`, `name`, `description`, `sequence`,
-#'   `annotations`, and `features`.
+#'   `annotations`, and `features`. Each feature includes a `parts` field: a
+#'   list of `{start, end}` intervals (0-based, half-open). For simple features
+#'   this has length 1; for spliced features (e.g. M2, NEP) it contains one
+#'   element per exon. `start`/`end` on the feature itself remain the outer
+#'   bounds for backward compatibility.
 #' @export
 read_genbank <- function(path) {
   reticulate::py_require("biopython")
@@ -45,11 +49,18 @@ read_genbank <- function(path) {
     features = purrr::map(
       record$features,
       function(f) {
+        loc <- f$location
+        parts <- if (reticulate::py_has_attr(loc, "parts") && length(loc$parts) > 1) {
+          purrr::map(loc$parts, ~ list(start = as.integer(.x$start), end = as.integer(.x$end)))
+        } else {
+          list(list(start = as.integer(loc$start), end = as.integer(loc$end)))
+        }
         list(
-          type = f$type,
-          start = as.integer(f$location$start),
-          end = as.integer(f$location$end),
-          strand = as.integer(f$location$strand),
+          type      = f$type,
+          start     = as.integer(loc$start),
+          end       = as.integer(loc$end),
+          strand    = as.integer(loc$strand),
+          parts     = parts,
           qualifiers = as.list(f$qualifiers)
         )
       }
