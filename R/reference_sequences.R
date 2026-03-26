@@ -50,22 +50,85 @@ read_genbank <- function(path) {
       record$features,
       function(f) {
         loc <- f$location
-        parts <- if (reticulate::py_has_attr(loc, "parts") && length(loc$parts) > 1) {
-          purrr::map(loc$parts, ~ list(start = as.integer(.x$start), end = as.integer(.x$end)))
+        parts <- if (
+          reticulate::py_has_attr(loc, "parts") && length(loc$parts) > 1
+        ) {
+          purrr::map(
+            loc$parts,
+            ~ list(start = as.integer(.x$start), end = as.integer(.x$end))
+          )
         } else {
           list(list(start = as.integer(loc$start), end = as.integer(loc$end)))
         }
         list(
-          type      = f$type,
-          start     = as.integer(loc$start),
-          end       = as.integer(loc$end),
-          strand    = as.integer(loc$strand),
-          parts     = parts,
+          type = f$type,
+          start = as.integer(loc$start),
+          end = as.integer(loc$end),
+          strand = as.integer(loc$strand),
+          parts = parts,
           qualifiers = as.list(f$qualifiers)
         )
       }
     )
   )
+}
+
+#' Extract CDS ORF coordinates from a GenBank entry
+#'
+#' Remaps CDS feature coordinates from a GenBank reference onto the tree root
+#' sequence via pairwise alignment.
+#'
+#' @param gb GenBank object from \code{seqUtils::read_genbank}, with
+#'   \code{$features} and \code{$sequence}.
+#' @param seq Nucleotide sequence string to remap coordinates onto (e.g. root
+#'   sequence from a tree tibble).
+#'
+#' @return A list of ORF objects ordered longest-first. Each ORF has a
+#'   \code{$parts} list of \code{list(start, end, cum_nt)} in \code{seq}
+#'   coordinates. Spliced ORFs (e.g. M2, NEP) have \code{length(parts) > 1}.
+#' @export
+extract_orfs <- function(gb, seq) {
+  cds <- keep(gb$features, ~ .x$type == "CDS")
+  if (length(cds) == 0) {
+    stop("No CDS features found in genbank entry")
+  }
+
+  gb_seq <- toupper(gb$sequence)
+  aln <- pwalign::pairwiseAlignment(
+    Biostrings::DNAString(toupper(seq)),
+    Biostrings::DNAString(gb_seq),
+    type = "global-local"
+  )
+  gb_offset <- pwalign::start(pwalign::subject(aln)) - 1L
+
+  seq_len <- nchar(seq)
+  orfs <- map(cds, function(f) {
+    codon_start <- as.integer(f$qualifiers$codon_start %||% 1L)
+    cum_nt <- 0L
+    parts <- imap(f$parts, function(p, i) {
+      gb_s <- p$start + if (i == 1L) (codon_start - 1L) else 0L
+      gb_e <- p$end - 1L
+      part <- list(
+        start = gb_s - gb_offset + 1L,
+        end = gb_e - gb_offset + 1L,
+        cum_nt = cum_nt
+      )
+      cum_nt <<- cum_nt + (gb_e - gb_s + 1L)
+      part
+    })
+    list(parts = parts)
+  })
+
+  orf_span <- function(o) {
+    c(min(map_int(o$parts, ~ .x$start)), max(map_int(o$parts, ~ .x$end)))
+  }
+  orfs <- keep(orfs, function(o) {
+    sp <- orf_span(o)
+    sp[2] >= 1L && sp[1] <= seq_len
+  })
+
+  total_len <- map_int(orfs, ~ sum(map_int(.x$parts, ~ .x$end - .x$start + 1L)))
+  orfs[order(total_len, decreasing = TRUE)]
 }
 
 
