@@ -14,7 +14,7 @@ extract_orfs(gb, seq)
 sequence from a tree tibble).}
 }
 \value{
-A list of ORF objects ordered longest-first. Each ORF has a
+A named list of ORF objects ordered longest-first. Each ORF has a
 \code{$parts} list of \code{list(start, end, cum_nt)} in \code{seq}
 coordinates. Spliced ORFs (e.g. M2, NEP) have \code{length(parts) > 1}.
 }
