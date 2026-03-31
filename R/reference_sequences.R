@@ -88,7 +88,7 @@ read_genbank <- function(path) {
 #'   coordinates. Spliced ORFs (e.g. M2, NEP) have \code{length(parts) > 1}.
 #' @export
 extract_orfs <- function(gb, seq) {
-  cds <- keep(gb$features, ~ .x$type == "CDS")
+  cds <- purrr::keep(gb$features, ~ .x$type == "CDS")
   if (length(cds) == 0) {
     stop("No CDS features found in genbank entry")
   }
@@ -103,14 +103,14 @@ extract_orfs <- function(gb, seq) {
 
   seq_len <- nchar(seq)
 
-  orfs_names = map_chr(cds, \(f) f$qualifiers$gene)
+  orfs_names <- purrr::map_chr(cds, \(f) f$qualifiers$gene)
 
-  orfs <- map(
+  orfs <- purrr::map(
     cds,
     function(f) {
       codon_start <- as.integer(f$qualifiers$codon_start %||% 1L)
       cum_nt <- 0L
-      parts <- imap(f$parts, function(p, i) {
+      parts <- purrr::imap(f$parts, function(p, i) {
         gb_s <- p$start + if (i == 1L) (codon_start - 1L) else 0L
         gb_e <- p$end - 1L
         part <- list(
@@ -128,9 +128,9 @@ extract_orfs <- function(gb, seq) {
   orfs = setNames(orfs, orfs_names)
 
   orf_span <- function(o) {
-    c(min(map_int(o$parts, ~ .x$start)), max(map_int(o$parts, ~ .x$end)))
+    c(min(purrr::map_int(o$parts, ~ .x$start)), max(purrr::map_int(o$parts, ~ .x$end)))
   }
-  orfs <- keep(
+  orfs <- purrr::keep(
     orfs,
     function(o) {
       sp <- orf_span(o)
@@ -138,7 +138,7 @@ extract_orfs <- function(gb, seq) {
     }
   )
 
-  total_len <- map_int(orfs, ~ sum(map_int(.x$parts, ~ .x$end - .x$start + 1L)))
+  total_len <- purrr::map_int(orfs, ~ sum(purrr::map_int(.x$parts, ~ .x$end - .x$start + 1L)))
   orfs[order(total_len, decreasing = TRUE)]
 }
 

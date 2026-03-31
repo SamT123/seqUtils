@@ -15,6 +15,7 @@ Imports:
     Biostrings,
     castor,
     fs,
+    pwalign,
     purrr,
     readr,
     reticulate,
