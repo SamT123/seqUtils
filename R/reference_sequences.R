@@ -128,7 +128,10 @@ extract_orfs <- function(gb, seq) {
   orfs = setNames(orfs, orfs_names)
 
   orf_span <- function(o) {
-    c(min(purrr::map_int(o$parts, ~ .x$start)), max(purrr::map_int(o$parts, ~ .x$end)))
+    c(
+      min(purrr::map_int(o$parts, ~ .x$start)),
+      max(purrr::map_int(o$parts, ~ .x$end))
+    )
   }
   orfs <- purrr::keep(
     orfs,
@@ -138,7 +141,10 @@ extract_orfs <- function(gb, seq) {
     }
   )
 
-  total_len <- purrr::map_int(orfs, ~ sum(purrr::map_int(.x$parts, ~ .x$end - .x$start + 1L)))
+  total_len <- purrr::map_int(
+    orfs,
+    ~ sum(purrr::map_int(.x$parts, ~ .x$end - .x$start + 1L))
+  )
   orfs[order(total_len, decreasing = TRUE)]
 }
 

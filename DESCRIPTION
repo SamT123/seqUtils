@@ -15,12 +15,14 @@ Imports:
     Biostrings,
     castor,
     fs,
+    lubridate,
     pwalign,
     purrr,
     readr,
     reticulate,
     stats,
-    stringr
+    stringr,
+    withr
 Suggests:
     testthat (>= 3.0.0),
     knitr,
