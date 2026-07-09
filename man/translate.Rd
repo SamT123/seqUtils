@@ -4,7 +4,7 @@
 \alias{translate}
 \title{Wrapper for Biostrings::translate with deletion handling}
 \usage{
-translate(sequences, reference_aas = NULL)
+translate(sequences, reference_aas = NULL, aligned = FALSE)
 }
 \arguments{
 \item{sequences}{Character vector of DNA/RNA sequences. May contain gap characters ("-").}
@@ -12,11 +12,18 @@ translate(sequences, reference_aas = NULL)
 \item{reference_aas}{(optional) Reference amino acid sequence. If provided, translated
 sequences will be aligned to this reference using MAFFT. This is essential when
 input sequences contain deletions and you want to preserve alignment in the output.}
+
+\item{aligned}{If TRUE, treat \code{sequences} as an in-frame alignment and
+translate it column-stably without MAFFT. A codon of three gaps becomes
+"-"; a codon with some but not all gaps, or with any ambiguity code,
+becomes "X"; a trailing stop codon is kept as "*". Incompatible with
+\code{reference_aas}.}
 }
 \value{
 Character vector of amino acid sequences, with names preserved. If \code{reference_aas}
 is provided, sequences will be aligned. Otherwise, deletions are simply removed and
-sequences may have different lengths.
+sequences may have different lengths. If \code{aligned = TRUE}, every output has
+the same length, \code{nchar(sequences) / 3}.
 }
 \description{
 Translates DNA/RNA sequences to amino acids, with special handling for deletions
@@ -29,11 +36,18 @@ Translates DNA/RNA sequences to amino acids, with special handling for deletions
 \item If \code{reference_aas} is provided, translated sequences are realigned to the reference
 \item If deletions exist without a reference, output will be unaligned (warning issued)
 }
+
+If \code{aligned = TRUE} the input is assumed to be a fixed-column alignment whose
+length is a multiple of 3. Gaps are then meaningful rather than noise, and no
+realignment is performed: amino-acid coordinates are stable by construction.
 }
 \examples{
 # Simple translation without deletions
 seqs <- c("ATGGCC", "ATGTTT")
 translate(seqs)
+
+# A fixed-column alignment: gaps are preserved, coordinates are stable
+translate(c("ATGGCCTAA", "ATG---TAA"), aligned = TRUE)
 
 \dontrun{
 # With deletions and reference alignment

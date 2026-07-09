@@ -8,7 +8,9 @@
 #' @param excluded_characters Characters to ignore when calculating frequencies
 #'   (e.g., "-", "X", "N")
 #' @param min_freq Minimum frequency (0-1) required for a character to be used.
-#'   Positions below this threshold become "?" (default: 0.5)
+#'   Positions below this threshold become `fill` (default: 0.5)
+#' @param fill Character written at positions where no character clears
+#'   `min_freq`, or where every character is excluded (default: "?")
 #'
 #' @return Single consensus sequence as a character string
 #'
@@ -25,27 +27,36 @@
 #' seqs <- c("AC-T", "ACGT", "AC-T")
 #' get_consensus(seqs, excluded_characters = "-")
 #'
+#' # Plurality consensus of a nucleotide alignment, gaps where nothing is called
+#' seqs <- c("AC-T", "AC-T")
+#' get_consensus(seqs, excluded_characters = "-", min_freq = 0, fill = "-")
+#'
 #' @importFrom Biostrings consensusMatrix
 #' @export
-get_consensus = function(sequences, excluded_characters = c(), min_freq = 0.5) {
-  sequences = toupper(sequences)
-  cm = Biostrings::consensusMatrix(sequences)
-  cm = cm[!rownames(cm) %in% excluded_characters, ]
+get_consensus <- function(
+  sequences,
+  excluded_characters = c(),
+  min_freq = 0.5,
+  fill = "?"
+) {
+  sequences <- toupper(sequences)
+  cm <- Biostrings::consensusMatrix(sequences)
+  cm <- cm[!rownames(cm) %in% excluded_characters, ]
 
-  get_aa = function(x) {
+  get_aa <- function(x) {
     names(x)[which.max(x)]
   }
 
-  get_freq = function(x) {
+  get_freq <- function(x) {
     max(x) / sum(x)
   }
 
-  highest_frequencies = setNames(
+  highest_frequencies <- setNames(
     apply(cm, 2, get_freq),
     apply(cm, 2, get_aa)
   )
 
-  aas = names(highest_frequencies)
-  aas[!is.finite(highest_frequencies) | highest_frequencies < min_freq] = "?"
+  aas <- names(highest_frequencies)
+  aas[!is.finite(highest_frequencies) | highest_frequencies < min_freq] <- fill
   paste0(aas, collapse = "")
 }

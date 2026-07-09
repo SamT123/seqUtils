@@ -2,9 +2,9 @@
 % Please edit documentation in R/reference_sequences.R
 \name{extract_orfs}
 \alias{extract_orfs}
-\title{Extract CDS ORF coordinates from a GenBank entry}
+\title{Extract ORF coordinates from a GenBank entry}
 \usage{
-extract_orfs(gb, seq)
+extract_orfs(gb, seq, types = "CDS")
 }
 \arguments{
 \item{gb}{GenBank object from \code{seqUtils::read_genbank}, with
@@ -12,13 +12,21 @@ extract_orfs(gb, seq)
 
 \item{seq}{Nucleotide sequence string to remap coordinates onto (e.g. root
 sequence from a tree tibble).}
+
+\item{types}{Character vector of GenBank feature types to extract. Defaults
+to \code{"CDS"}. \code{"mat_peptide"} and \code{"sig_peptide"} give the
+post-cleavage products, e.g. HA1 and HA2 on influenza HA.}
 }
 \value{
 A named list of ORF objects ordered longest-first. Each ORF has a
 \code{$parts} list of \code{list(start, end, cum_nt)} in \code{seq}
-coordinates. Spliced ORFs (e.g. M2, NEP) have \code{length(parts) > 1}.
+coordinates. Spliced ORFs (e.g. M2, NS2) have \code{length(parts) > 1}.
+\code{CDS} features are named by their \code{/gene} qualifier,
+\code{mat_peptide} by \code{/product} (both HA mat_peptides share
+\code{/gene="HA"}), and \code{sig_peptide} by the literal \code{"SigPep"}.
 }
 \description{
-Remaps CDS feature coordinates from a GenBank reference onto the tree root
-sequence via pairwise alignment.
+Remaps annotated feature coordinates from a GenBank reference onto another
+sequence via pairwise alignment. When \code{seq} is the GenBank sequence
+itself the alignment is skipped, so \code{pwalign} is not needed.
 }

@@ -4,7 +4,7 @@
 \alias{get_consensus}
 \title{Calculate consensus sequence from multiple sequences}
 \usage{
-get_consensus(sequences, excluded_characters = c(), min_freq = 0.5)
+get_consensus(sequences, excluded_characters = c(), min_freq = 0.5, fill = "?")
 }
 \arguments{
 \item{sequences}{Character vector of aligned sequences}
@@ -13,7 +13,10 @@ get_consensus(sequences, excluded_characters = c(), min_freq = 0.5)
 (e.g., "-", "X", "N")}
 
 \item{min_freq}{Minimum frequency (0-1) required for a character to be used.
-Positions below this threshold become "?" (default: 0.5)}
+Positions below this threshold become \code{fill} (default: 0.5)}
+
+\item{fill}{Character written at positions where no character clears
+\code{min_freq}, or where every character is excluded (default: "?")}
 }
 \value{
 Single consensus sequence as a character string
@@ -35,5 +38,9 @@ get_consensus(seqs, min_freq = 0.7)  # Returns "A??T"
 # Exclude gaps from calculation
 seqs <- c("AC-T", "ACGT", "AC-T")
 get_consensus(seqs, excluded_characters = "-")
+
+# Plurality consensus of a nucleotide alignment, gaps where nothing is called
+seqs <- c("AC-T", "AC-T")
+get_consensus(seqs, excluded_characters = "-", min_freq = 0, fill = "-")
 
 }
