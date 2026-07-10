@@ -41,22 +41,15 @@ get_consensus <- function(
 ) {
   sequences <- toupper(sequences)
   cm <- Biostrings::consensusMatrix(sequences)
-  cm <- cm[!rownames(cm) %in% excluded_characters, ]
+  cm <- cm[!rownames(cm) %in% excluded_characters, , drop = FALSE]
 
-  get_aa <- function(x) {
-    names(x)[which.max(x)]
-  }
+  # ties.method = "first" matches which.max, so a tied column resolves the same
+  # way on every run.
+  winners <- max.col(t(cm), ties.method = "first")
+  counts <- cm[cbind(winners, seq_len(ncol(cm)))]
+  highest_frequencies <- counts / colSums(cm)
 
-  get_freq <- function(x) {
-    max(x) / sum(x)
-  }
-
-  highest_frequencies <- setNames(
-    apply(cm, 2, get_freq),
-    apply(cm, 2, get_aa)
-  )
-
-  aas <- names(highest_frequencies)
+  aas <- rownames(cm)[winners]
   aas[!is.finite(highest_frequencies) | highest_frequencies < min_freq] <- fill
   paste0(aas, collapse = "")
 }

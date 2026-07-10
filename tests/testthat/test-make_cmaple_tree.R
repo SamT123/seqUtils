@@ -1,6 +1,6 @@
 # Helper function to check if CMAPLE is available
-cmaple_available = function() {
-  result = suppressWarnings(system(
+cmaple_available <- function() {
+  result <- suppressWarnings(system(
     "cmaple --help",
     ignore.stdout = TRUE,
     ignore.stderr = TRUE
@@ -11,8 +11,8 @@ cmaple_available = function() {
 # Input validation tests ----
 
 test_that("make_cmaple_tree errors with unnamed sequences", {
-  sequences = c("ATCGATCG", "GCTAGCTA", "TTAACCGG")
-  tree_path = tempfile(fileext = ".nwk")
+  sequences <- c("ATCGATCG", "GCTAGCTA", "TTAACCGG")
+  tree_path <- tempfile(fileext = ".nwk")
 
   expect_error(
     make_cmaple_tree(sequences, tree_path),
@@ -21,8 +21,8 @@ test_that("make_cmaple_tree errors with unnamed sequences", {
 })
 
 test_that("make_cmaple_tree errors with partially named sequences", {
-  sequences = c(seq1 = "ATCGATCG", "GCTAGCTA", seq3 = "TTAACCGG")
-  tree_path = tempfile(fileext = ".nwk")
+  sequences <- c(seq1 = "ATCGATCG", "GCTAGCTA", seq3 = "TTAACCGG")
+  tree_path <- tempfile(fileext = ".nwk")
 
   expect_error(
     make_cmaple_tree(sequences, tree_path),
@@ -31,8 +31,8 @@ test_that("make_cmaple_tree errors with partially named sequences", {
 })
 
 test_that("make_cmaple_tree errors with non-character sequences", {
-  sequences = c(seq1 = 1, seq2 = 2, seq3 = 3)
-  tree_path = tempfile(fileext = ".nwk")
+  sequences <- c(seq1 = 1, seq2 = 2, seq3 = 3)
+  tree_path <- tempfile(fileext = ".nwk")
 
   expect_error(
     make_cmaple_tree(sequences, tree_path),
@@ -43,8 +43,8 @@ test_that("make_cmaple_tree errors with non-character sequences", {
 test_that("make_cmaple_tree errors with non-existent starting tree", {
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
-  sequences = c(seq1 = "ATCGATCG", seq2 = "GCTAGCTA", seq3 = "TTAACCGG")
-  tree_path = tempfile(fileext = ".nwk")
+  sequences <- c(seq1 = "ATCGATCG", seq2 = "GCTAGCTA", seq3 = "TTAACCGG")
+  tree_path <- tempfile(fileext = ".nwk")
 
   expect_error(
     make_cmaple_tree(
@@ -58,12 +58,12 @@ test_that("make_cmaple_tree errors with non-existent starting tree", {
 
 test_that("make_cmaple_tree errors when CMAPLE is not installed", {
   # Temporarily clear PATH to simulate CMAPLE not being installed
-  old_path = Sys.getenv("PATH")
+  old_path <- Sys.getenv("PATH")
   on.exit(Sys.setenv(PATH = old_path))
   Sys.setenv(PATH = "")
 
-  sequences = c(seq1 = "ATCGATCG", seq2 = "GCTAGCTA", seq3 = "TTAACCGG")
-  tree_path = tempfile(fileext = ".nwk")
+  sequences <- c(seq1 = "ATCGATCG", seq2 = "GCTAGCTA", seq3 = "TTAACCGG")
+  tree_path <- tempfile(fileext = ".nwk")
 
   expect_error(
     make_cmaple_tree(sequences, tree_path),
@@ -76,16 +76,16 @@ test_that("make_cmaple_tree errors when CMAPLE is not installed", {
 test_that("make_cmaple_tree builds a tree with minimal input", {
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
-  sequences = c(
+  sequences <- c(
     seq1 = "ATCGATCGATCGATCG",
     seq2 = "ATCGATTGATCGATCG",
     seq3 = "ATCGATCGAACGATCG",
     seq4 = "TTCGATCGATCGATCG"
   )
-  tree_path = tempfile(fileext = ".nwk")
+  tree_path <- tempfile(fileext = ".nwk")
   on.exit(unlink(c(tree_path, paste0(tree_path, ".log"))))
 
-  result = make_cmaple_tree(sequences, tree_path)
+  result <- make_cmaple_tree(sequences, tree_path)
 
   expect_s3_class(result, "phylo")
   expect_equal(length(result$tip.label), 4)
@@ -97,15 +97,15 @@ test_that("make_cmaple_tree builds a tree with minimal input", {
 test_that("make_cmaple_tree returns tree object by default", {
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
-  sequences = c(
+  sequences <- c(
     seq1 = "ATCGATCGATCGATCG",
     seq2 = "ATCGATTGATCGATCG",
     seq3 = "ATCGATCGAACGATCG"
   )
-  tree_path = tempfile(fileext = ".nwk")
+  tree_path <- tempfile(fileext = ".nwk")
   on.exit(unlink(c(tree_path, paste0(tree_path, ".log"))))
 
-  result = make_cmaple_tree(sequences, tree_path)
+  result <- make_cmaple_tree(sequences, tree_path)
 
   expect_s3_class(result, "phylo")
 })
@@ -113,15 +113,15 @@ test_that("make_cmaple_tree returns tree object by default", {
 test_that("make_cmaple_tree returns path when return_tree = FALSE", {
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
-  sequences = c(
+  sequences <- c(
     seq1 = "ATCGATCGATCGATCG",
     seq2 = "ATCGATTGATCGATCG",
     seq3 = "ATCGATCGAACGATCG"
   )
-  tree_path = tempfile(fileext = ".nwk")
+  tree_path <- tempfile(fileext = ".nwk")
   on.exit(unlink(c(tree_path, paste0(tree_path, ".log"))))
 
-  result = make_cmaple_tree(sequences, tree_path, return_tree = FALSE)
+  result <- make_cmaple_tree(sequences, tree_path, return_tree = FALSE)
 
   expect_type(result, "character")
   expect_equal(result, tree_path)
@@ -132,7 +132,7 @@ test_that("make_cmaple_tree returns path when return_tree = FALSE", {
 test_that("make_cmaple_tree respects multifurcating parameter", {
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
-  sequences = c(
+  sequences <- c(
     seq0 = "ATCGATCGATCGATCG",
     seq1 = "ATCGATCGATCGATCG",
     seq2 = "ATCGATCGATCGATCG",
@@ -142,13 +142,13 @@ test_that("make_cmaple_tree respects multifurcating parameter", {
   )
 
   # Test with multifurcating = FALSE - should be strictly bifurcating
-  tree_path_bifurcating = tempfile(fileext = ".nwk")
+  tree_path_bifurcating <- tempfile(fileext = ".nwk")
   on.exit(unlink(c(
     tree_path_bifurcating,
     paste0(tree_path_bifurcating, ".log")
   )))
 
-  result_bifurcating = make_cmaple_tree(
+  result_bifurcating <- make_cmaple_tree(
     sequences,
     tree_path_bifurcating,
     multifurcating = FALSE
@@ -157,13 +157,13 @@ test_that("make_cmaple_tree respects multifurcating parameter", {
   # Check that the tree is strictly bifurcating (binary)
   expect_true(ape::is.binary(result_bifurcating))
 
-  tree_path_multi = tempfile(fileext = ".nwk")
+  tree_path_multi <- tempfile(fileext = ".nwk")
   on.exit(
     unlink(c(tree_path_multi, paste0(tree_path_multi, ".log"))),
     add = TRUE
   )
 
-  result_multi = make_cmaple_tree(
+  result_multi <- make_cmaple_tree(
     sequences,
     tree_path_multi,
     multifurcating = TRUE
@@ -175,17 +175,17 @@ test_that("make_cmaple_tree respects multifurcating parameter", {
 test_that("make_cmaple_tree respects keep_files parameter", {
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
-  sequences = c(
+  sequences <- c(
     seq1 = "ATCGATCGATCGATCG",
     seq2 = "ATCGATTGATCGATCG",
     seq3 = "ATCGATCGAACGATCG"
   )
-  tree_path = tempfile(fileext = ".nwk")
-  fasta_path = fs::path_ext_set(tree_path, ".fasta")
-  log_path = paste0(tree_path, ".log")
+  tree_path <- tempfile(fileext = ".nwk")
+  fasta_path <- fs::path_ext_set(tree_path, ".fasta")
+  log_path <- paste0(tree_path, ".log")
   on.exit(unlink(c(tree_path, fasta_path, log_path)))
 
-  result = make_cmaple_tree(
+  result <- make_cmaple_tree(
     sequences,
     tree_path,
     keep_files = c("nwk", "log")

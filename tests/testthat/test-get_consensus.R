@@ -98,3 +98,21 @@ test_that("get_consensus fills columns where every character is excluded", {
     "AC-T"
   )
 })
+
+test_that("get_consensus breaks ties deterministically", {
+  sequences <- c("ACGA", "ACGT")
+
+  expect_equal(
+    replicate(5, get_consensus(sequences, min_freq = 0)),
+    rep("ACGA", 5)
+  )
+})
+
+test_that("get_consensus handles a single remaining character class", {
+  sequences <- c("AAAA", "AAAA")
+
+  expect_equal(
+    get_consensus(sequences, excluded_characters = c("C", "G", "T")),
+    "AAAA"
+  )
+})

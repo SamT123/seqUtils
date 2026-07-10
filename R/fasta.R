@@ -20,9 +20,9 @@
 #'
 #' @importFrom readr read_lines
 #' @export
-fast_fasta = function(path, noisy = F) {
-  lines = readr::read_lines(path, skip_empty_rows = FALSE)
-  name_lines = which(substr(lines, 1, 1) == '>')
+fast_fasta <- function(path, noisy = F) {
+  lines <- readr::read_lines(path, skip_empty_rows = FALSE)
+  name_lines <- which(substr(lines, 1, 1) == '>')
   if (noisy) {
     message("Loaded ", length(name_lines), " sequences")
   }
@@ -32,25 +32,25 @@ fast_fasta = function(path, noisy = F) {
       all(name_lines == seq(1, length(lines), 2))
   ) {
     # case: single-line sequences
-    sequences = lines[-name_lines]
-    names(sequences) = lines[name_lines]
+    sequences <- lines[-name_lines]
+    names(sequences) <- lines[name_lines]
   } else {
     # case: multi-line sequences
-    sequences = rep(NA, length(name_lines))
-    names(sequences) = rep(NA, length(name_lines))
+    sequences <- rep(NA, length(name_lines))
+    names(sequences) <- rep(NA, length(name_lines))
 
-    name_lines = c(name_lines, length(lines) + 1)
+    name_lines <- c(name_lines, length(lines) + 1)
 
     for (i in seq_along(name_lines[-1])) {
-      names(sequences)[[i]] = lines[[name_lines[[i]]]]
-      sequences[[i]] = paste(
+      names(sequences)[[i]] <- lines[[name_lines[[i]]]]
+      sequences[[i]] <- paste(
         lines[(name_lines[[i]] + 1):(name_lines[[i + 1]] - 1)],
         collapse = ""
       )
     }
   }
 
-  names(sequences) = substring(names(sequences), 2)
+  names(sequences) <- substring(names(sequences), 2)
   sequences
 }
 
@@ -77,26 +77,26 @@ fast_fasta = function(path, noisy = F) {
 #'
 #' @importFrom readr write_lines
 #' @export
-write_fast_fasta = function(seqs, names = NULL, path, line_width = NULL) {
+write_fast_fasta <- function(seqs, names = NULL, path, line_width = NULL) {
   if (is.null(names)) {
-    names = names(seqs)
+    names <- names(seqs)
   }
 
   stopifnot(length(seqs) == length(names))
 
   if (!is.null(line_width)) {
     # Split sequences into chunks of line_width characters
-    seqs = vapply(
+    seqs <- vapply(
       seqs,
       function(seq) {
         if (nchar(seq) <= line_width) {
           return(seq)
         }
-        seq_chunks = character(ceiling(nchar(seq) / line_width))
+        seq_chunks <- character(ceiling(nchar(seq) / line_width))
         for (i in seq_along(seq_chunks)) {
-          start_pos = (i - 1) * line_width + 1
-          end_pos = min(i * line_width, nchar(seq))
-          seq_chunks[i] = substr(seq, start_pos, end_pos)
+          start_pos <- (i - 1) * line_width + 1
+          end_pos <- min(i * line_width, nchar(seq))
+          seq_chunks[i] <- substr(seq, start_pos, end_pos)
         }
         paste(seq_chunks, collapse = "\n")
       },

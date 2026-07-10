@@ -34,7 +34,7 @@
 #' seqs <- c(seq1 = "ATCG", seq2 = "ATCC", seq3 = "TTCG")
 #' tree <- make_iqtree_tree(seqs, tree_path = "iq_tree.nwk", seed = 1)
 #' }
-make_iqtree_tree = function(
+make_iqtree_tree <- function(
   sequences,
   tree_path,
   iqtree_path = NULL,
@@ -52,14 +52,14 @@ make_iqtree_tree = function(
     stop("sequences must be a named vector with all sequences having names")
   }
 
-  tree_dir = fs::path_dir(tree_path)
+  tree_dir <- fs::path_dir(tree_path)
   if (!fs::dir_exists(tree_dir)) {
     message("Creating directory: ", tree_dir)
     fs::dir_create(tree_dir, recurse = TRUE)
   }
 
-  valid_files = c("nwk", "fasta", "log")
-  invalid_files = setdiff(keep_files, valid_files)
+  valid_files <- c("nwk", "fasta", "log")
+  invalid_files <- setdiff(keep_files, valid_files)
   if (length(invalid_files) > 0) {
     stop(
       "Invalid keep_files values: ",
@@ -76,9 +76,9 @@ make_iqtree_tree = function(
     add_to_PATH(iqtree_path)
   }
 
-  iqtree_bin = Sys.which("iqtree2")
+  iqtree_bin <- Sys.which("iqtree2")
   if (iqtree_bin == "") {
-    iqtree_bin = Sys.which("iqtree")
+    iqtree_bin <- Sys.which("iqtree")
   }
   if (iqtree_bin == "") {
     stop(
@@ -86,8 +86,8 @@ make_iqtree_tree = function(
     )
   }
 
-  fasta_path = fs::path_ext_set(tree_path, ".fasta")
-  prefix = fs::path_ext_remove(fasta_path)
+  fasta_path <- fs::path_ext_set(tree_path, ".fasta")
+  prefix <- fs::path_ext_remove(fasta_path)
 
   seqUtils::write_fast_fasta(
     sequences,
@@ -105,26 +105,26 @@ make_iqtree_tree = function(
   )
 
   if (!is.null(seed)) {
-    iqtree_call = c(iqtree_call, "--seed", shQuote(seed))
+    iqtree_call <- c(iqtree_call, "--seed", shQuote(seed))
   }
 
   if (overwrite) {
-    iqtree_call = c(iqtree_call, "-redo")
+    iqtree_call <- c(iqtree_call, "-redo")
   }
 
-  exit_code = system(paste(iqtree_call, collapse = " "))
+  exit_code <- system(paste(iqtree_call, collapse = " "))
   if (exit_code != 0) {
     stop("IQ-TREE execution failed with exit code ", exit_code)
   }
 
-  treefile_path = paste0(prefix, ".treefile")
+  treefile_path <- paste0(prefix, ".treefile")
   if (!file.exists(treefile_path)) {
     stop("IQ-TREE did not create expected output file: ", treefile_path)
   }
 
   fs::file_move(treefile_path, tree_path)
 
-  logfile_path = paste0(prefix, ".log")
+  logfile_path <- paste0(prefix, ".log")
   if (file.exists(logfile_path)) {
     fs::file_move(logfile_path, paste0(tree_path, ".log"))
   }
@@ -132,7 +132,7 @@ make_iqtree_tree = function(
   # IQ-TREE also produces .iqtree, .bionj, .mldist, .ckp.gz, .splits.nex,
   # .contree. None are downstream inputs here; remove them so the run leaves
   # only nwk / fasta / log according to keep_files.
-  aux_exts = c(
+  aux_exts <- c(
     ".iqtree",
     ".bionj",
     ".mldist",
@@ -144,8 +144,8 @@ make_iqtree_tree = function(
   )
   unlink(paste0(prefix, aux_exts))
 
-  tree = castor::read_tree(file = tree_path)
-  tree = ladderizeAndMaybeRoot(tree, out_sequence = NULL)
+  tree <- castor::read_tree(file = tree_path)
+  tree <- ladderizeAndMaybeRoot(tree, out_sequence = NULL)
   castor::write_tree(tree, tree_path)
 
   if (!("fasta" %in% keep_files)) {

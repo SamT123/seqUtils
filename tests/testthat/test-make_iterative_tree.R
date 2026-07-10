@@ -1,6 +1,6 @@
-iqtree_available = function() {
-  ok = function(bin) {
-    res = suppressWarnings(
+iqtree_available <- function() {
+  ok <- function(bin) {
+    res <- suppressWarnings(
       system(paste(bin, "--help"), ignore.stdout = TRUE, ignore.stderr = TRUE)
     )
     res == 0
@@ -8,8 +8,8 @@ iqtree_available = function() {
   ok("iqtree2") || ok("iqtree")
 }
 
-cmaple_available = function() {
-  res = suppressWarnings(
+cmaple_available <- function() {
+  res <- suppressWarnings(
     system("cmaple --help", ignore.stdout = TRUE, ignore.stderr = TRUE)
   )
   res == 0
@@ -17,30 +17,30 @@ cmaple_available = function() {
 
 # Build a tiny synthetic alignment: 3 years x 8 seqs, all of length 60, with a
 # few SNPs so that tree inference is well-defined.
-make_synthetic_alignment = function() {
-  base = strsplit(
+make_synthetic_alignment <- function() {
+  base <- strsplit(
     "ATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG",
     ""
   )[[
     1
   ]]
-  vary = function(positions, alts) {
-    s = base
-    s[positions] = alts
+  vary <- function(positions, alts) {
+    s <- base
+    s[positions] <- alts
     paste(s, collapse = "")
   }
-  rows = list()
-  i = 1
+  rows <- list()
+  i <- 1
   for (yr in c(2018L, 2019L, 2020L)) {
     for (k in 1:8) {
-      positions = ((yr - 2017L) * 5L + k) %% 60L + 1L
-      alt = c("A", "T", "C", "G")[((yr * k) %% 4L) + 1L]
-      rows[[i]] = list(
+      positions <- ((yr - 2017L) * 5L + k) %% 60L + 1L
+      alt <- c("A", "T", "C", "G")[((yr * k) %% 4L) + 1L]
+      rows[[i]] <- list(
         Isolate_unique_identifier = paste0("s", yr, "_", k),
         dna_sequence = vary(positions, alt),
         Collection_date = as.Date(paste0(yr, "-06-15"))
       )
-      i = i + 1
+      i <- i + 1
     }
   }
   do.call(rbind, lapply(rows, as.data.frame))
@@ -48,9 +48,9 @@ make_synthetic_alignment = function() {
 
 
 test_that("subsamplePerYear caps per-year count and honours forced ids", {
-  aln = make_synthetic_alignment()
-  aln$year = lubridate::year(aln$Collection_date)
-  out = subsamplePerYear(
+  aln <- make_synthetic_alignment()
+  aln$year <- lubridate::year(aln$Collection_date)
+  out <- subsamplePerYear(
     aln,
     n_per_year = 3,
     forced_identifiers = "s2018_1",
@@ -64,7 +64,7 @@ test_that("subsamplePerYear caps per-year count and honours forced ids", {
 
 
 test_that("make_iterative_tree errors on bad cascade_sizes", {
-  aln = make_synthetic_alignment()
+  aln <- make_synthetic_alignment()
   expect_error(
     make_iterative_tree(
       aln,
@@ -96,7 +96,7 @@ test_that("make_iterative_tree errors on bad cascade_sizes", {
 
 
 test_that("make_iterative_tree errors when required columns missing", {
-  bad = data.frame(a = 1, b = 2)
+  bad <- data.frame(a = 1, b = 2)
   expect_error(
     make_iterative_tree(
       bad,
@@ -113,13 +113,13 @@ test_that("make_iterative_tree builds a tree end-to-end on a tiny alignment", {
   skip_if_not(iqtree_available(), "IQ-TREE not installed")
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
-  aln = make_synthetic_alignment()
-  out_dir = tempfile()
+  aln <- make_synthetic_alignment()
+  out_dir <- tempfile()
   fs::dir_create(out_dir)
   on.exit(unlink(out_dir, recursive = TRUE))
 
-  tree_path = fs::path(out_dir, "final", ext = "nwk")
-  tree = make_iterative_tree(
+  tree_path <- fs::path(out_dir, "final", ext = "nwk")
+  tree <- make_iterative_tree(
     alignment = aln,
     tree_path = tree_path,
     initial_iqtree_size = 2,

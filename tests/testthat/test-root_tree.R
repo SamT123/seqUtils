@@ -1,6 +1,6 @@
 # Helper function to check if CMAPLE is available
-cmaple_available = function() {
-  result = suppressWarnings(system(
+cmaple_available <- function() {
+  result <- suppressWarnings(system(
     "cmaple --help",
     ignore.stdout = TRUE,
     ignore.stderr = TRUE
@@ -12,25 +12,25 @@ test_that("root_tree_using_outsequence roots a tree correctly and removes outgro
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
   # Create a simple unrooted tree
-  tree = ape::read.tree(text = "((seq1:1,seq2:1):1,(seq3:1,seq4:1):1);")
+  tree <- ape::read.tree(text = "((seq1:1,seq2:1):1,(seq3:1,seq4:1):1);")
 
-  sequences = c(
+  sequences <- c(
     seq1 = "ATCGATCGATCGATCG",
     seq2 = "ATCGATTGATCGATCG",
     seq3 = "ATCGATCGGGGGGGGG",
     seq4 = "TTCGATCGATCGATCG"
   )
 
-  outsequence = "GGGGGGGGGGGGGGGG"
+  outsequence <- "GGGGGGGGGGGGGGGG"
 
-  result = root_tree_using_outsequence(tree, sequences, outsequence)
+  result <- root_tree_using_outsequence(tree, sequences, outsequence)
 
   expect_s3_class(result, "phylo")
   expect_equal(length(result$tip.label), 4)
   expect_true(all(c("seq1", "seq2", "seq3", "seq4") %in% result$tip.label))
   expect_false("outsequence" %in% result$tip.label)
   expect_true(!is.null(result$root.edge) || result$Nnode > 0)
-  root = castor::find_root(result)
+  root <- castor::find_root(result)
   expect_true(
     "seq3" %in% result$tip.label[result$edge[, 2][result$edge[, 1] == root]]
   )
@@ -39,18 +39,18 @@ test_that("root_tree_using_outsequence roots a tree correctly and removes outgro
 test_that("root_tree_using_outsequence keeps outgroup when requested", {
   skip_if_not(cmaple_available(), "CMAPLE not installed")
 
-  tree = ape::read.tree(text = "((seq1:1,seq2:1):1,(seq3:1,seq4:1):1);")
+  tree <- ape::read.tree(text = "((seq1:1,seq2:1):1,(seq3:1,seq4:1):1);")
 
-  sequences = c(
+  sequences <- c(
     seq1 = "ATCGATCGATCGATCG",
     seq2 = "ATCGATTGATCGATCG",
     seq3 = "ATCGATCGAACGATCG",
     seq4 = "TTCGATCGATCGATCG"
   )
 
-  outsequence = "GGGGGGGGGGGGGGGG"
+  outsequence <- "GGGGGGGGGGGGGGGG"
 
-  result = root_tree_using_outsequence(
+  result <- root_tree_using_outsequence(
     tree,
     sequences,
     outsequence,

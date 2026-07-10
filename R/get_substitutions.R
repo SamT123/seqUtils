@@ -36,7 +36,7 @@
 #' @importFrom purrr map2 pmap
 #' @importFrom stringr str_split
 #' @export
-get_substitutions = function(
+get_substitutions <- function(
   sequence_1,
   sequence_2,
   position_map = 1:nchar(sequence_1),
@@ -58,12 +58,12 @@ get_substitutions = function(
     }
   }
 
-  lengths = nchar(c(sequence_1, sequence_2))
+  lengths <- nchar(c(sequence_1, sequence_2))
 
   if (!all(lengths == min(lengths))) {
     message('Trimming to shortest length: ', min(lengths))
-    sequence_1 = substr(sequence_1, 1, min(lengths))
-    sequence_2 = substr(sequence_2, 1, min(lengths))
+    sequence_1 <- substr(sequence_1, 1, min(lengths))
+    sequence_2 <- substr(sequence_2, 1, min(lengths))
   }
 
   if (length(sequence_1) == 1 & length(sequence_2) == 1 & simplify) {
@@ -75,21 +75,21 @@ get_substitutions = function(
     ))
   }
 
-  sequence_2_uniques = unique(sequence_2)
-  idxs = match(sequence_2, sequence_2_uniques)
+  sequence_2_uniques <- unique(sequence_2)
+  idxs <- match(sequence_2, sequence_2_uniques)
 
   # Store original names from sequence_2
   sequence_2_names <- names(sequence_2)
   has_names <- !is.null(sequence_2_names) && !all(is.na(sequence_2_names))
 
-  unique_substitutions = get_substitutions_CASE_MULTIPLE(
+  unique_substitutions <- get_substitutions_CASE_MULTIPLE(
     sequence_1,
     sequence_2_uniques,
     position_map,
     exclude
   )
 
-  all_substitutions = unique_substitutions[idxs]
+  all_substitutions <- unique_substitutions[idxs]
 
   # Preserve names from sequence_2 in output (only for multi-sequence case)
   if (has_names) {
@@ -100,13 +100,13 @@ get_substitutions = function(
 }
 
 
-get_substitutions_CASE_SINGLE = function(
+get_substitutions_CASE_SINGLE <- function(
   sequence_1,
   sequence_2,
   position_map = 1:max(nchar(sequence_1), nchar(sequence_2)),
   exclude = c()
 ) {
-  min_len = min(
+  min_len <- min(
     stringr::str_length(sequence_1),
     stringr::str_length(sequence_2)
   )
@@ -122,7 +122,7 @@ get_substitutions_CASE_SINGLE = function(
   sequence_1_split <- stringr::str_split(sequence_1, '')[[1]][1:min_len]
   sequence_2_split <- stringr::str_split(sequence_2, '')[[1]][1:min_len]
 
-  diffs = unlist(
+  diffs <- unlist(
     purrr::pmap(
       list(
         s1 = sequence_1_split,
@@ -139,14 +139,14 @@ get_substitutions_CASE_SINGLE = function(
 
   # Convert NULL to character(0) for consistent return type
   if (is.null(diffs)) {
-    diffs = character(0)
+    diffs <- character(0)
   }
 
   diffs
 }
 
 
-get_substitutions_CASE_MULTIPLE = function(
+get_substitutions_CASE_MULTIPLE <- function(
   sequence_1,
   sequence_2,
   position_map = 1:nchar(sequence_1),
@@ -157,17 +157,17 @@ get_substitutions_CASE_MULTIPLE = function(
     return(rep(list(character(0)), length(sequence_2)))
   }
 
-  diffs = rep(list(NULL), length(sequence_2))
+  diffs <- rep(list(NULL), length(sequence_2))
 
-  sequence_1_split = stringr::str_split(sequence_1, pattern = "")[[1]]
-  sequence_2_split = Biostrings::AAStringSet(sequence_2)
+  sequence_1_split <- stringr::str_split(sequence_1, pattern = "")[[1]]
+  sequence_2_split <- Biostrings::AAStringSet(sequence_2)
 
   for (i in seq_along(sequence_1_split)) {
-    sequence_2_pos_i = as.character(Biostrings::subseq(sequence_2_split, i, i))
-    incl = sequence_1_split[[i]] != sequence_2_pos_i &
+    sequence_2_pos_i <- as.character(Biostrings::subseq(sequence_2_split, i, i))
+    incl <- sequence_1_split[[i]] != sequence_2_pos_i &
       (!(sequence_2_pos_i %in% exclude | sequence_1_split[[i]] %in% exclude))
 
-    diffs[incl] = purrr::map2(
+    diffs[incl] <- purrr::map2(
       diffs[incl],
       paste0(
         sequence_1_split[[i]],
@@ -179,7 +179,7 @@ get_substitutions_CASE_MULTIPLE = function(
   }
 
   # Convert NULL to character(0) for consistent return type
-  diffs = lapply(diffs, function(x) {
+  diffs <- lapply(diffs, function(x) {
     if (is.null(x)) character(0) else x
   })
 

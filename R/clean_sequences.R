@@ -29,7 +29,7 @@
 #'
 #' @importFrom stringr str_replace_all
 #' @importFrom Biostrings AA_STANDARD
-clean_sequences = function(
+clean_sequences <- function(
   sequences,
   type,
   alphabet = NULL,
@@ -40,26 +40,26 @@ clean_sequences = function(
     stop("type must be either 'aa' or 'nt', got '", type, "'")
   }
 
-  sequences = toupper(sequences)
+  sequences <- toupper(sequences)
 
   if (is.null(replacement_character)) {
-    replacement_character = c(aa = "X", nt = "N")[[type]]
+    replacement_character <- c(aa = "X", nt = "N")[[type]]
   }
 
   if (is.null(alphabet)) {
-    alphabet = list(
+    alphabet <- list(
       aa = c(Biostrings::AA_STANDARD, "-"),
       nt = c("A", "T", "C", "G", "-")
     )[[type]]
   }
 
-  regex = paste0(
+  regex <- paste0(
     "[^",
     paste(alphabet, collapse = ""),
     "]"
   )
 
-  sequences = setNames(
+  sequences <- setNames(
     str_replace_all(
       sequences,
       regex,

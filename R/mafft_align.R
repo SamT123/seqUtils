@@ -22,7 +22,7 @@
 #'
 #' @note Requires MAFFT to be installed and available in PATH
 #' @export
-mafft_align = function(unaligned_sequences, reference_sequence, noisy = F) {
+mafft_align <- function(unaligned_sequences, reference_sequence, noisy = F) {
   # Input validation
   if (length(reference_sequence) != 1) {
     stop(
@@ -36,28 +36,28 @@ mafft_align = function(unaligned_sequences, reference_sequence, noisy = F) {
     stop("MAFFT is not installed or not available in PATH")
   }
 
-  NA_sequence_locations = is.na(unaligned_sequences)
+  NA_sequence_locations <- is.na(unaligned_sequences)
 
-  temp_mafft_folder = tempdir()
+  temp_mafft_folder <- tempdir()
 
-  reference_seq_file = tempfile(
+  reference_seq_file <- tempfile(
     pattern = "reference",
     fileext = ".fasta",
     tmpdir = temp_mafft_folder
   )
-  unaligned_seqs_file = tempfile(
+  unaligned_seqs_file <- tempfile(
     pattern = "sequences",
     fileext = ".fasta",
     tmpdir = temp_mafft_folder
   )
-  aligned_seqs_file = tempfile(
+  aligned_seqs_file <- tempfile(
     pattern = "aligned",
     fileext = ".fasta",
     tmpdir = temp_mafft_folder
   )
 
-  unique_unaligned_sequences = unique(unaligned_sequences)
-  all_to_unique_sequence_map = match(
+  unique_unaligned_sequences <- unique(unaligned_sequences)
+  all_to_unique_sequence_map <- match(
     unaligned_sequences,
     unique_unaligned_sequences
   )
@@ -88,12 +88,12 @@ mafft_align = function(unaligned_sequences, reference_sequence, noisy = F) {
     )
   )
 
-  unique_aligned_sequences = toupper(fast_fasta(aligned_seqs_file)[-1])
-  all_aligned_sequences = unique_aligned_sequences[all_to_unique_sequence_map]
+  unique_aligned_sequences <- toupper(fast_fasta(aligned_seqs_file)[-1])
+  all_aligned_sequences <- unique_aligned_sequences[all_to_unique_sequence_map]
 
-  all_aligned_sequences[NA_sequence_locations] = NA
+  all_aligned_sequences[NA_sequence_locations] <- NA
 
-  names(all_aligned_sequences) = names(unaligned_sequences)
+  names(all_aligned_sequences) <- names(unaligned_sequences)
 
   all_aligned_sequences
 }

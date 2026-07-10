@@ -1,7 +1,7 @@
 # Helper function to add a path to the system PATH
-add_to_PATH = function(path) {
-  current_path = Sys.getenv("PATH")
-  new_path = paste(path, current_path, sep = .Platform$path.sep)
+add_to_PATH <- function(path) {
+  current_path <- Sys.getenv("PATH")
+  new_path <- paste(path, current_path, sep = .Platform$path.sep)
   Sys.setenv(PATH = new_path)
 }
 
@@ -94,7 +94,7 @@ add_to_PATH = function(path) {
 #'   return_tree = TRUE
 #' )
 #' }
-make_cmaple_tree = function(
+make_cmaple_tree <- function(
   sequences,
   tree_path,
   multifurcating = TRUE,
@@ -118,7 +118,7 @@ make_cmaple_tree = function(
   }
 
   # Check that tree_path directory exists, create if needed
-  tree_dir = fs::path_dir(tree_path)
+  tree_dir <- fs::path_dir(tree_path)
   if (!fs::dir_exists(tree_dir)) {
     message("Creating directory: ", tree_dir)
     fs::dir_create(tree_dir, recurse = TRUE)
@@ -126,8 +126,8 @@ make_cmaple_tree = function(
 
   # Validate keep_files
   if (!is.null(keep_files)) {
-    valid_files = c("nwk", "fasta", "log")
-    invalid_files = setdiff(keep_files, valid_files)
+    valid_files <- c("nwk", "fasta", "log")
+    invalid_files <- setdiff(keep_files, valid_files)
     if (length(invalid_files) > 0) {
       stop(
         "Invalid keep_files values: ",
@@ -158,7 +158,7 @@ make_cmaple_tree = function(
     if (!file.exists(starting_tree_path)) {
       stop("starting_tree_path does not exist: ", starting_tree_path)
     }
-    starting_tree = castor::read_tree(file = starting_tree_path)
+    starting_tree <- castor::read_tree(file = starting_tree_path)
     message(
       sum(names(sequences) %in% starting_tree$tip.label),
       " / ",
@@ -174,7 +174,7 @@ make_cmaple_tree = function(
     )
   }
 
-  fasta_path = fs::path_ext_set(tree_path, ".fasta")
+  fasta_path <- fs::path_ext_set(tree_path, ".fasta")
 
   seqUtils::write_fast_fasta(
     sequences,
@@ -241,24 +241,24 @@ make_cmaple_tree = function(
       "-m", model
     )
 
-  exit_code = system(paste(cmaple_call, collapse = " "))
+  exit_code <- system(paste(cmaple_call, collapse = " "))
   if (exit_code != 0) {
     stop("CMAPLE execution failed with exit code ", exit_code)
   }
 
   # Check if output files were created
-  treefile_path = paste0(fasta_path, ".treefile")
+  treefile_path <- paste0(fasta_path, ".treefile")
   if (!file.exists(treefile_path)) {
     stop("CMAPLE did not create expected output file: ", treefile_path)
   }
 
   # Move output files to desired locations
-  exit_code = system(paste("mv", shQuote(treefile_path), shQuote(tree_path)))
+  exit_code <- system(paste("mv", shQuote(treefile_path), shQuote(tree_path)))
   if (exit_code != 0) {
     stop("Failed to move tree file to ", tree_path)
   }
 
-  logfile_path = paste0(fasta_path, ".log")
+  logfile_path <- paste0(fasta_path, ".log")
   if (file.exists(logfile_path)) {
     system(paste(
       "mv",
@@ -267,8 +267,8 @@ make_cmaple_tree = function(
     ))
   }
 
-  tree = castor::read_tree(file = tree_path)
-  tree = ladderizeAndMaybeRoot(tree, out_sequence)
+  tree <- castor::read_tree(file = tree_path)
+  tree <- ladderizeAndMaybeRoot(tree, out_sequence)
   castor::write_tree(tree, tree_path)
 
   # Clean up files based on keep_files
@@ -279,7 +279,7 @@ make_cmaple_tree = function(
   }
 
   if (!("log" %in% keep_files)) {
-    log_path = paste0(tree_path, ".log")
+    log_path <- paste0(tree_path, ".log")
     if (fs::file_exists(log_path)) {
       fs::file_delete(log_path)
     }
@@ -299,18 +299,18 @@ make_cmaple_tree = function(
 }
 
 
-ladderizeAndMaybeRoot = function(tree, out_sequence = NULL) {
+ladderizeAndMaybeRoot <- function(tree, out_sequence = NULL) {
   if (!is.null(out_sequence)) {
     stopifnot(out_sequence %in% tree$tip.label)
 
-    tree = ape::root(ape::unroot(tree), outgroup = out_sequence)
+    tree <- ape::root(ape::unroot(tree), outgroup = out_sequence)
   }
 
-  tree = ape::ladderize(tree)
+  tree <- ape::ladderize(tree)
 
-  f = fs::file_temp()
+  f <- fs::file_temp()
   castor::write_tree(tree, file = f)
-  tree_read = castor::read_tree(file = f)
+  tree_read <- castor::read_tree(file = f)
 
   tree_read
 }

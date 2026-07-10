@@ -56,7 +56,7 @@
 #'   work_dir            = "tree"
 #' )
 #' }
-make_iterative_tree = function(
+make_iterative_tree <- function(
   alignment,
   tree_path,
   initial_iqtree_size,
@@ -68,12 +68,12 @@ make_iterative_tree = function(
   model = "GTR",
   return_tree = TRUE
 ) {
-  required_cols = c(
+  required_cols <- c(
     "Isolate_unique_identifier",
     "dna_sequence",
     "Collection_date"
   )
-  missing_cols = setdiff(required_cols, colnames(alignment))
+  missing_cols <- setdiff(required_cols, colnames(alignment))
   if (length(missing_cols) > 0) {
     stop(
       "alignment is missing required columns: ",
@@ -98,14 +98,14 @@ make_iterative_tree = function(
   }
 
   if (is.null(work_dir)) {
-    work_dir = fs::path_dir(tree_path)
+    work_dir <- fs::path_dir(tree_path)
   }
-  cascade_dir = fs::path(work_dir, "cascade")
+  cascade_dir <- fs::path(work_dir, "cascade")
   fs::dir_create(cascade_dir, recurse = TRUE)
 
-  alignment$year = lubridate::year(alignment$Collection_date)
+  alignment$year <- lubridate::year(alignment$Collection_date)
 
-  to_named_sequences = function(aln_subset) {
+  to_named_sequences <- function(aln_subset) {
     stats::setNames(
       aln_subset$dna_sequence,
       aln_subset$Isolate_unique_identifier
@@ -117,14 +117,14 @@ make_iterative_tree = function(
     initial_iqtree_size,
     " sequences/year"
   )
-  init_aln = subsamplePerYear(
+  init_aln <- subsamplePerYear(
     alignment,
     n_per_year = initial_iqtree_size,
     forced_identifiers = character(0),
     unique_only = unique_only,
     seed = seed
   )
-  init_tree_path = fs::path(cascade_dir, "iqtree_initial", ext = "nwk")
+  init_tree_path <- fs::path(cascade_dir, "iqtree_initial", ext = "nwk")
   make_iqtree_tree(
     sequences = to_named_sequences(init_aln),
     tree_path = init_tree_path,
@@ -136,8 +136,8 @@ make_iterative_tree = function(
     return_tree = FALSE
   )
 
-  prev_tree_path = init_tree_path
-  prev_tips = init_aln$Isolate_unique_identifier
+  prev_tree_path <- init_tree_path
+  prev_tips <- init_aln$Isolate_unique_identifier
 
   for (n_per_year in cascade_sizes) {
     message(
@@ -145,14 +145,14 @@ make_iterative_tree = function(
       n_per_year,
       " sequences/year"
     )
-    step_aln = subsamplePerYear(
+    step_aln <- subsamplePerYear(
       alignment,
       n_per_year = n_per_year,
       forced_identifiers = prev_tips,
       unique_only = unique_only,
       seed = seed
     )
-    step_tree_path = fs::path(
+    step_tree_path <- fs::path(
       cascade_dir,
       paste0("size_", n_per_year),
       ext = "nwk"
@@ -170,8 +170,8 @@ make_iterative_tree = function(
       keep_files = c("nwk", "log"),
       return_tree = FALSE
     )
-    prev_tree_path = step_tree_path
-    prev_tips = step_aln$Isolate_unique_identifier
+    prev_tree_path <- step_tree_path
+    prev_tips <- step_aln$Isolate_unique_identifier
   }
 
   message(
@@ -179,7 +179,7 @@ make_iterative_tree = function(
     nrow(alignment),
     " sequences)"
   )
-  final_tree = make_cmaple_tree(
+  final_tree <- make_cmaple_tree(
     sequences = to_named_sequences(alignment),
     tree_path = tree_path,
     multifurcating = TRUE,
@@ -200,7 +200,7 @@ make_iterative_tree = function(
 # Internal: stratified subsample by year, force-include specific isolates.
 # Mirrors the inspiration code at predicting_influenza_using_convergence_ms_public
 # /make_trees/R/make_CMAPLE_tree.R::ss(). Caller must add the `year` column.
-subsamplePerYear = function(
+subsamplePerYear <- function(
   alignment,
   n_per_year,
   forced_identifiers = character(0),
@@ -214,24 +214,24 @@ subsamplePerYear = function(
   }
 
   # Put forced rows first so de-duplication keeps them.
-  alignment = alignment[
+  alignment <- alignment[
     order(!alignment$Isolate_unique_identifier %in% forced_identifiers),
   ]
 
   if (unique_only) {
-    keep = !duplicated(alignment$dna_sequence) |
+    keep <- !duplicated(alignment$dna_sequence) |
       alignment$Isolate_unique_identifier %in% forced_identifiers
-    alignment = alignment[keep, ]
+    alignment <- alignment[keep, ]
   }
 
-  picked = unlist(
+  picked <- unlist(
     lapply(split(seq_len(nrow(alignment)), alignment$year), function(idx) {
       idx[sample.int(length(idx), size = min(length(idx), n_per_year))]
     }),
     use.names = FALSE
   )
 
-  is_forced = alignment$Isolate_unique_identifier %in% forced_identifiers
-  keep_rows = sort(union(picked, which(is_forced)))
+  is_forced <- alignment$Isolate_unique_identifier %in% forced_identifiers
+  keep_rows <- sort(union(picked, which(is_forced)))
   alignment[keep_rows, , drop = FALSE]
 }

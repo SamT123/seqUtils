@@ -11,14 +11,14 @@
 #'
 #' @return Rooted phylogenetic tree
 #' @export
-root_tree_using_outsequence = function(
+root_tree_using_outsequence <- function(
   tree,
   sequences,
   outsequence,
   cmaple_path = NULL,
   remove_outsequence = TRUE
 ) {
-  sequences = c(
+  sequences <- c(
     sequences,
     c(
       outsequence = substr(
@@ -29,8 +29,8 @@ root_tree_using_outsequence = function(
     )
   )
 
-  temp_tree_without_outsequence = fs::file_temp()
-  temp_tree_with_outsequence = fs::file_temp()
+  temp_tree_without_outsequence <- fs::file_temp()
+  temp_tree_with_outsequence <- fs::file_temp()
 
   castor::write_tree(
     tree = tree,
@@ -46,11 +46,11 @@ root_tree_using_outsequence = function(
     multifurcating = !castor::is_bifurcating(tree)
   )
 
-  tree_with_outsequence = castor::read_tree(
+  tree_with_outsequence <- castor::read_tree(
     file = temp_tree_with_outsequence
   )
 
-  rooted_tree_with_outsequence = castor::root_via_outgroup(
+  rooted_tree_with_outsequence <- castor::root_via_outgroup(
     tree_with_outsequence,
     outgroup = "outsequence"
   )
