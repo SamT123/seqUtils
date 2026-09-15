@@ -9,6 +9,10 @@ root_tree_using_outsequence(
   sequences,
   outsequence,
   cmaple_path = NULL,
+  model = "GTR",
+  site_rate = "NONE",
+  seed = NULL,
+  num_threads = "AUTO",
   remove_outsequence = TRUE
 )
 }
@@ -20,6 +24,17 @@ root_tree_using_outsequence(
 \item{outsequence}{Outgroup sequence (will be truncated to match sequence length)}
 
 \item{cmaple_path}{Path to CMAPLE executable}
+
+\item{model}{Substitution model for the CMAPLE placement run, passed to
+\code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. Default \code{"GTR"}, its default.}
+
+\item{site_rate}{Site rate variation model for the placement run, passed to
+\code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. Default \code{"NONE"}.}
+
+\item{seed}{Seed for RNG, passed to \code{\link[=make_cmaple_tree]{make_cmaple_tree()}}.}
+
+\item{num_threads}{Threads for the placement run, passed to
+\code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. Default \code{"AUTO"}.}
 
 \item{remove_outsequence}{Remove outgroup from final tree (default TRUE)}
 }

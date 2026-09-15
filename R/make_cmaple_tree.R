@@ -45,6 +45,12 @@ add_to_PATH <- function(path) {
 #'   for CMAPLE to use. Default is \code{"AUTO"} which lets CMAPLE choose automatically.
 #' @param model Character string specifying the substitution model. Default is
 #'   \code{"GTR"} (General Time Reversible).
+#' @param site_rate Site rate variation model, passed to CMAPLE as
+#'   \code{--site-rate}: one of \code{"NONE"} (default, no rate variation),
+#'   \code{"SCALAR"} (a per-site rate scalar) or \code{"MATRIX"} (a per-site
+#'   substitution matrix). The CMAPLE manual recommends pairing a non-\code{NONE}
+#'   value with \code{model = "UNREST"}. Requires CMAPLE >= 2; \code{"NONE"}
+#'   emits no flag, so the default remains compatible with CMAPLE 1.x.
 #' @param seed Seed for RNG.
 #' @param overwrite Logical. If \code{TRUE}, passes \code{--overwrite} to CMAPLE,
 #'   allowing it to overwrite existing output files. Default is \code{FALSE}.
@@ -104,12 +110,14 @@ make_cmaple_tree <- function(
   out_sequence = NULL,
   num_threads = "AUTO",
   model = "GTR",
+  site_rate = "NONE",
   seed = NULL,
   overwrite = FALSE,
   keep_files = c("nwk", "log"),
   return_tree = TRUE
 ) {
   # Validate inputs
+  site_rate <- match.arg(site_rate, c("NONE", "SCALAR", "MATRIX"))
   if (!is.character(sequences)) {
     stop("sequences must be a character vector")
   }
@@ -231,6 +239,16 @@ make_cmaple_tree <- function(
     cmaple_call = c(
       cmaple_call,
       "--overwrite"
+    )
+  }
+
+  # Omitted for "NONE" so the command line is unchanged for callers on CMAPLE
+  # 1.x, which aborts on an unrecognised flag.
+  if (site_rate != "NONE") {
+    # fmt: skip
+    cmaple_call = c(
+      cmaple_call,
+      "--site-rate", site_rate
     )
   }
 

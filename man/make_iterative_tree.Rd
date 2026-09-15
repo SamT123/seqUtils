@@ -16,6 +16,7 @@ make_iterative_tree(
   seed = 100,
   num_threads = "AUTO",
   model = "GTR",
+  site_rate = "NONE",
   cmaple_path = NULL,
   iqtree_path = NULL,
   return_tree = TRUE
@@ -62,6 +63,11 @@ Default 100.}
 \code{"AUTO"}.}
 
 \item{model}{Substitution model for both tools. Default \code{"GTR"}.}
+
+\item{site_rate}{Site rate variation model for the CMAPLE steps, forwarded to
+\code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. Default \code{"NONE"}. CMAPLE-only, so a non-\code{NONE} value
+requires \code{starting_tree_path} — without one the first tree is built by
+IQ-TREE, which has no equivalent setting.}
 
 \item{cmaple_path}{Optional character. Directory containing the CMAPLE
 executable, forwarded to \code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. If \code{NULL} (default),

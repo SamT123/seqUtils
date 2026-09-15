@@ -7,6 +7,13 @@
 #' @param sequences Named vector of sequences for tree tips
 #' @param outsequence Outgroup sequence (will be truncated to match sequence length)
 #' @param cmaple_path Path to CMAPLE executable
+#' @param model Substitution model for the CMAPLE placement run, passed to
+#'   [make_cmaple_tree()]. Default `"GTR"`, its default.
+#' @param site_rate Site rate variation model for the placement run, passed to
+#'   [make_cmaple_tree()]. Default `"NONE"`.
+#' @param seed Seed for RNG, passed to [make_cmaple_tree()].
+#' @param num_threads Threads for the placement run, passed to
+#'   [make_cmaple_tree()]. Default `"AUTO"`.
 #' @param remove_outsequence Remove outgroup from final tree (default TRUE)
 #'
 #' @return Rooted phylogenetic tree
@@ -16,6 +23,10 @@ root_tree_using_outsequence <- function(
   sequences,
   outsequence,
   cmaple_path = NULL,
+  model = "GTR",
+  site_rate = "NONE",
+  seed = NULL,
+  num_threads = "AUTO",
   remove_outsequence = TRUE
 ) {
   sequences <- c(
@@ -43,6 +54,10 @@ root_tree_using_outsequence <- function(
     starting_tree_path = temp_tree_without_outsequence,
     freeze_starting_tree = TRUE,
     cmaple_path = cmaple_path,
+    model = model,
+    site_rate = site_rate,
+    seed = seed,
+    num_threads = num_threads,
     multifurcating = !castor::is_bifurcating(tree)
   )
 

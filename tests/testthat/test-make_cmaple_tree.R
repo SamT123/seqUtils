@@ -195,3 +195,40 @@ test_that("make_cmaple_tree respects keep_files parameter", {
   expect_true(fs::file_exists(log_path))
   expect_false(fs::file_exists(fasta_path))
 })
+
+# site_rate ----
+
+test_that("make_cmaple_tree rejects an invalid site_rate", {
+  sequences <- c(seq1 = "ATCGATCG", seq2 = "GCTAGCTA", seq3 = "TTAACCGG")
+
+  expect_error(
+    make_cmaple_tree(
+      sequences,
+      tempfile(fileext = ".nwk"),
+      site_rate = "BANANA"
+    )
+  )
+})
+
+test_that("make_cmaple_tree passes --site-rate to CMAPLE", {
+  skip_if_not(cmaple_available(), "CMAPLE not installed")
+
+  sequences <- c(
+    seq1 = "ATCGATCGATCGATCG",
+    seq2 = "ATCGATTGATCGATCG",
+    seq3 = "ATCGATCGAACGATCG"
+  )
+  tree_path <- tempfile(fileext = ".nwk")
+  log_path <- paste0(tree_path, ".log")
+  on.exit(unlink(c(tree_path, log_path)))
+
+  make_cmaple_tree(
+    sequences,
+    tree_path,
+    model = "UNREST",
+    site_rate = "SCALAR"
+  )
+
+  log_lines <- readLines(log_path, warn = FALSE)
+  expect_true(any(grepl("--site-rate SCALAR", log_lines, fixed = TRUE)))
+})

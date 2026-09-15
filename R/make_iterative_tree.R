@@ -59,6 +59,10 @@
 #' @param num_threads Threads to pass to IQ-TREE and CMAPLE. Default
 #'   `"AUTO"`.
 #' @param model Substitution model for both tools. Default `"GTR"`.
+#' @param site_rate Site rate variation model for the CMAPLE steps, forwarded to
+#'   [make_cmaple_tree()]. Default `"NONE"`. CMAPLE-only, so a non-`NONE` value
+#'   requires `starting_tree_path` — without one the first tree is built by
+#'   IQ-TREE, which has no equivalent setting.
 #' @param cmaple_path Optional character. Directory containing the CMAPLE
 #'   executable, forwarded to [make_cmaple_tree()]. If `NULL` (default),
 #'   CMAPLE is taken from `PATH`.
@@ -96,6 +100,7 @@ make_iterative_tree <- function(
   seed = 100,
   num_threads = "AUTO",
   model = "GTR",
+  site_rate = "NONE",
   cmaple_path = NULL,
   iqtree_path = NULL,
   return_tree = TRUE
@@ -124,6 +129,16 @@ make_iterative_tree <- function(
     stop(
       "starting_tips must be supplied (non-empty) when starting_tree_path",
       " is given"
+    )
+  }
+  # Without a starting tree the first tree comes from IQ-TREE, which has no
+  # --site-rate equivalent; the setting would be silently ignored.
+  if (site_rate != "NONE" && !use_starting_tree) {
+    stop(
+      "site_rate is CMAPLE-only and requires starting_tree_path; got ",
+      "site_rate = '",
+      site_rate,
+      "' with no starting tree"
     )
   }
 
@@ -233,6 +248,7 @@ make_iterative_tree <- function(
       cmaple_path = cmaple_path,
       num_threads = num_threads,
       model = model,
+      site_rate = site_rate,
       seed = seed,
       overwrite = TRUE,
       keep_files = c("nwk", "log"),
@@ -256,6 +272,7 @@ make_iterative_tree <- function(
     cmaple_path = cmaple_path,
     num_threads = num_threads,
     model = model,
+    site_rate = site_rate,
     seed = seed,
     overwrite = TRUE,
     keep_files = c("nwk", "log", "fasta"),
