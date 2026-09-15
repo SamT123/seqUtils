@@ -154,7 +154,7 @@ test_that("make_iterative_tree builds a tree end-to-end on a tiny alignment", {
 })
 
 test_that("make_iterative_tree rejects site_rate without a starting tree", {
-  alignment <- tibble::tibble(
+  alignment <- data.frame(
     Isolate_unique_identifier = c("a", "b", "c"),
     dna_sequence = c("ATCGATCG", "ATCGATTG", "ATCGAACG"),
     Collection_date = as.Date(c("2020-01-01", "2021-01-01", "2022-01-01"))
