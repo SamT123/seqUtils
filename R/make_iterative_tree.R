@@ -58,7 +58,11 @@
 #'   Default 100.
 #' @param num_threads Threads to pass to IQ-TREE and CMAPLE. Default
 #'   `"AUTO"`.
-#' @param model Substitution model for both tools. Default `"GTR"`.
+#' @param model Substitution model for the CMAPLE cascade steps. Default
+#'   `"GTR"`.
+#' @param model_iqtree Substitution model for the IQ-TREE bootstrap step,
+#'   forwarded to [make_iqtree_tree()]. Defaults to `model`. Unused when a
+#'   starting tree is supplied.
 #' @param site_rate Site rate variation model for the CMAPLE steps, forwarded to
 #'   [make_cmaple_tree()]. Default `"NONE"`. CMAPLE-only, so a non-`NONE` value
 #'   requires `starting_tree_path` — without one the first tree is built by
@@ -100,6 +104,7 @@ make_iterative_tree <- function(
   seed = 100,
   num_threads = "AUTO",
   model = "GTR",
+  model_iqtree = model,
   site_rate = "NONE",
   cmaple_path = NULL,
   iqtree_path = NULL,
@@ -202,7 +207,7 @@ make_iterative_tree <- function(
       tree_path = init_tree_path,
       iqtree_path = iqtree_path,
       num_threads = num_threads,
-      model = model,
+      model = model_iqtree,
       seed = seed,
       overwrite = TRUE,
       keep_files = c("nwk", "log"),

@@ -16,6 +16,7 @@ make_iterative_tree(
   seed = 100,
   num_threads = "AUTO",
   model = "GTR",
+  model_iqtree = model,
   site_rate = "NONE",
   cmaple_path = NULL,
   iqtree_path = NULL,
@@ -62,7 +63,12 @@ Default 100.}
 \item{num_threads}{Threads to pass to IQ-TREE and CMAPLE. Default
 \code{"AUTO"}.}
 
-\item{model}{Substitution model for both tools. Default \code{"GTR"}.}
+\item{model}{Substitution model for the CMAPLE cascade steps. Default
+\code{"GTR"}.}
+
+\item{model_iqtree}{Substitution model for the IQ-TREE bootstrap step,
+forwarded to \code{\link[=make_iqtree_tree]{make_iqtree_tree()}}. Defaults to \code{model}. Unused when a
+starting tree is supplied.}
 
 \item{site_rate}{Site rate variation model for the CMAPLE steps, forwarded to
 \code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. Default \code{"NONE"}. CMAPLE-only, so a non-\code{NONE} value
