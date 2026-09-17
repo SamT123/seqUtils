@@ -22,6 +22,7 @@ Imports:
     rlang,
     stats,
     stringr,
+    tibble,
     withr
 Suggests:
     knitr,
