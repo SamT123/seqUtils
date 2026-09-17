@@ -15,9 +15,9 @@ make_iterative_tree(
   unique_only = TRUE,
   seed = 100,
   num_threads = "AUTO",
-  model = "GTR",
-  model_iqtree = model,
-  site_rate = "NONE",
+  model = "UNREST",
+  model_iqtree = "UNREST+G4",
+  site_rate = "SCALAR",
   cmaple_path = NULL,
   iqtree_path = NULL,
   return_tree = TRUE
@@ -64,16 +64,15 @@ Default 100.}
 \code{"AUTO"}.}
 
 \item{model}{Substitution model for the CMAPLE cascade steps. Default
-\code{"GTR"}.}
+\code{"UNREST"}.}
 
 \item{model_iqtree}{Substitution model for the IQ-TREE bootstrap step,
-forwarded to \code{\link[=make_iqtree_tree]{make_iqtree_tree()}}. Defaults to \code{model}. Unused when a
+forwarded to \code{\link[=make_iqtree_tree]{make_iqtree_tree()}}. Default \code{"UNREST+G4"}. Unused when a
 starting tree is supplied.}
 
 \item{site_rate}{Site rate variation model for the CMAPLE steps, forwarded to
-\code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. Default \code{"NONE"}. CMAPLE-only, so a non-\code{NONE} value
-requires \code{starting_tree_path} — without one the first tree is built by
-IQ-TREE, which has no equivalent setting.}
+\code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. Default \code{"SCALAR"}. CMAPLE-only; the IQ-TREE step
+gets its rate variation from \code{model_iqtree} instead.}
 
 \item{cmaple_path}{Optional character. Directory containing the CMAPLE
 executable, forwarded to \code{\link[=make_cmaple_tree]{make_cmaple_tree()}}. If \code{NULL} (default),

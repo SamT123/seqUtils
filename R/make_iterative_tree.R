@@ -59,14 +59,13 @@
 #' @param num_threads Threads to pass to IQ-TREE and CMAPLE. Default
 #'   `"AUTO"`.
 #' @param model Substitution model for the CMAPLE cascade steps. Default
-#'   `"GTR"`.
+#'   `"UNREST"`.
 #' @param model_iqtree Substitution model for the IQ-TREE bootstrap step,
-#'   forwarded to [make_iqtree_tree()]. Defaults to `model`. Unused when a
+#'   forwarded to [make_iqtree_tree()]. Default `"UNREST+G4"`. Unused when a
 #'   starting tree is supplied.
 #' @param site_rate Site rate variation model for the CMAPLE steps, forwarded to
-#'   [make_cmaple_tree()]. Default `"NONE"`. CMAPLE-only, so a non-`NONE` value
-#'   requires `starting_tree_path` — without one the first tree is built by
-#'   IQ-TREE, which has no equivalent setting.
+#'   [make_cmaple_tree()]. Default `"SCALAR"`. CMAPLE-only; the IQ-TREE step
+#'   gets its rate variation from `model_iqtree` instead.
 #' @param cmaple_path Optional character. Directory containing the CMAPLE
 #'   executable, forwarded to [make_cmaple_tree()]. If `NULL` (default),
 #'   CMAPLE is taken from `PATH`.
@@ -103,9 +102,9 @@ make_iterative_tree <- function(
   unique_only = TRUE,
   seed = 100,
   num_threads = "AUTO",
-  model = "GTR",
-  model_iqtree = model,
-  site_rate = "NONE",
+  model = "UNREST",
+  model_iqtree = "UNREST+G4",
+  site_rate = "SCALAR",
   cmaple_path = NULL,
   iqtree_path = NULL,
   return_tree = TRUE
@@ -134,16 +133,6 @@ make_iterative_tree <- function(
     stop(
       "starting_tips must be supplied (non-empty) when starting_tree_path",
       " is given"
-    )
-  }
-  # Without a starting tree the first tree comes from IQ-TREE, which has no
-  # --site-rate equivalent; the setting would be silently ignored.
-  if (site_rate != "NONE" && !use_starting_tree) {
-    stop(
-      "site_rate is CMAPLE-only and requires starting_tree_path; got ",
-      "site_rate = '",
-      site_rate,
-      "' with no starting tree"
     )
   }
 

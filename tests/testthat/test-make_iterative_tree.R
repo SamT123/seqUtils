@@ -152,21 +152,3 @@ test_that("make_iterative_tree builds a tree end-to-end on a tiny alignment", {
   )))
   expect_true(fs::file_exists(tree_path))
 })
-
-test_that("make_iterative_tree rejects site_rate without a starting tree", {
-  alignment <- data.frame(
-    Isolate_unique_identifier = c("a", "b", "c"),
-    dna_sequence = c("ATCGATCG", "ATCGATTG", "ATCGAACG"),
-    Collection_date = as.Date(c("2020-01-01", "2021-01-01", "2022-01-01"))
-  )
-
-  expect_error(
-    make_iterative_tree(
-      alignment = alignment,
-      tree_path = tempfile(fileext = ".nwk"),
-      initial_iqtree_size = 1,
-      site_rate = "SCALAR"
-    ),
-    "site_rate is CMAPLE-only and requires starting_tree_path"
-  )
-})
