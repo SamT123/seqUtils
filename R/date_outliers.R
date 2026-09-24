@@ -30,37 +30,46 @@ theilSenSlope <- function(x, y, n_points = 5000, seed = 1) {
 #' @param dates A `Date` vector, one per tip, in `tree$tip.label` order.
 #' @param iqd Interquartile ranges from the regression line beyond which a tip
 #'   is flagged.
+#' @param fit Optional logical vector, one per tip: the tips that set the
+#'   line and IQR (e.g. an even subsample of an unevenly sampled tree). All
+#'   dated tips are still tested.
 #'
 #' @return A list with `outliers`, a tibble of `label`, `collection_date` and
 #'   `root_to_tip_residual_days` for the flagged tips, and `slope_per_day`, the
 #'   Theil-Sen slope in tree units per day.
 #'
 #' @export
-find_date_outliers <- function(tree, dates, iqd = 3) {
+find_date_outliers <- function(tree, dates, iqd = 3, fit = NULL) {
   if (length(dates) != ape::Ntip(tree)) {
     rlang::abort(
       "`dates` must have one element per tip.",
       class = "seqUtils_error_date_length"
     )
   }
+  if (!is.null(fit) && (!is.logical(fit) || length(fit) != ape::Ntip(tree))) {
+    rlang::abort(
+      "`fit` must be a logical vector with one element per tip.",
+      class = "seqUtils_error_fit_length"
+    )
+  }
 
   days <- as.numeric(dates)
   root_to_tip <- ape::node.depth.edgelength(tree)[seq_len(ape::Ntip(tree))]
   dated <- !is.na(days)
+  fitting <- dated & (if (is.null(fit)) TRUE else fit)
 
-  if (sum(dated) < 20) {
+  if (sum(fitting) < 20) {
     return(list(
       outliers = emptyOutlierTable(),
       slope_per_day = NA_real_
     ))
   }
 
-  slope_per_day <- theilSenSlope(days[dated], root_to_tip[dated])
+  slope_per_day <- theilSenSlope(days[fitting], root_to_tip[fitting])
 
   residuals <- root_to_tip - slope_per_day * days
-  residuals <- residuals - stats::median(residuals, na.rm = TRUE)
-  cutoff <- iqd *
-    diff(stats::quantile(residuals, c(0.25, 0.75), na.rm = TRUE))
+  residuals <- residuals - stats::median(residuals[fitting])
+  cutoff <- iqd * diff(stats::quantile(residuals[fitting], c(0.25, 0.75)))
 
   flagged <- which(dated & abs(residuals) > cutoff)
 

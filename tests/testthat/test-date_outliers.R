@@ -14,6 +14,28 @@ makeClocklikeTree <- function(n_tips = 60, rate = 0.01, seed = 1) {
   )
 }
 
+# 60 sparse old tips above the line set by 3,000 dense recent ones; t10 and
+# t30 are misdated.
+makeUnevenTree <- function(rate = 0.01, seed = 1) {
+  withr::with_seed(seed, {
+    days <- c(sample(0:2999, 60), sample(3000:3650, 3000, replace = TRUE))
+    jitter <- stats::rnorm(length(days), sd = rate * 20)
+  })
+  divergence <- rate * days + rate * 0.4 * pmax(3000 - days, 0) + jitter
+  divergence[c(10, 30)] <- divergence[c(10, 30)] + rate * 2000
+
+  tree <- ape::stree(length(days), type = "star")
+  tree$tip.label <- paste0("t", seq_along(days))
+  tree$edge.length <- divergence
+
+  list(
+    tree = tree,
+    dates = as.Date("2015-01-01") + days,
+    even = seq_along(days) <= 60 |
+      seq_along(days) %in% (60 + seq(1, 3000, by = 50))
+  )
+}
+
 test_that("a tip far off the clock line is flagged", {
   sim <- makeClocklikeTree()
   sim$tree$edge.length[[7]] <- sim$tree$edge.length[[7]] + 30
@@ -75,6 +97,31 @@ test_that("a dates vector of the wrong length is an error", {
   expect_error(
     find_date_outliers(sim$tree, sim$dates[-1]),
     class = "seqUtils_error_date_length"
+  )
+})
+
+test_that("fitting on every tip of an uneven tree cuts the sparse old epoch", {
+  sim <- makeUnevenTree()
+
+  flagged <- find_date_outliers(sim$tree, sim$dates)$outliers$label
+
+  expect_gt(sum(flagged %in% paste0("t", 1:60)), 40)
+})
+
+test_that("fitting on an even subsample flags only the misdated tips", {
+  sim <- makeUnevenTree()
+
+  result <- find_date_outliers(sim$tree, sim$dates, fit = sim$even)
+
+  expect_setequal(result$outliers$label, c("t10", "t30"))
+})
+
+test_that("a fit vector of the wrong length is an error", {
+  sim <- makeClocklikeTree()
+
+  expect_error(
+    find_date_outliers(sim$tree, sim$dates, fit = rep(TRUE, 59)),
+    class = "seqUtils_error_fit_length"
   )
 })
 

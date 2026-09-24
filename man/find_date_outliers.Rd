@@ -4,7 +4,7 @@
 \alias{find_date_outliers}
 \title{Flag tips whose collection dates conflict with the phylogeny}
 \usage{
-find_date_outliers(tree, dates, iqd = 3)
+find_date_outliers(tree, dates, iqd = 3, fit = NULL)
 }
 \arguments{
 \item{tree}{A rooted \code{phylo} object.}
@@ -13,6 +13,10 @@ find_date_outliers(tree, dates, iqd = 3)
 
 \item{iqd}{Interquartile ranges from the regression line beyond which a tip
 is flagged.}
+
+\item{fit}{Optional logical vector, one per tip: the tips that set the
+line and IQR (e.g. an even subsample of an unevenly sampled tree). All
+dated tips are still tested.}
 }
 \value{
 A list with \code{outliers}, a tibble of \code{label}, \code{collection_date} and
